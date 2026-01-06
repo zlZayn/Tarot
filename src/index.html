@@ -1,0 +1,1340 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ethereal Tarot | 虚幻塔罗牌</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Pirata+One&family=Cinzel:wght@400;700&family=Ma+Shan+Zheng&family=Long+Cang&family=Noto+Serif+SC:wght@600&family=Cormorant+Garamond:ital,wght@0,600;1,600&display=swap"
+        rel="stylesheet">
+
+    <style>
+        /* 样式模块：全局样式与界面布局 */
+        :root {
+            --c-gold: #D4AF37;
+            --c-gold-light: #F9EDC3;
+            --c-bg: #050505;
+        }
+
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: var(--c-bg);
+            /* 默认为英文版字体设置 */
+            font-family: "Cormorant Garamond", serif;
+            color: #eee;
+            user-select: none;
+            transition: font-family 0.3s ease;
+        }
+
+        /* 中文模式字体覆盖 */
+        body.lang-cn {
+            font-family: "Cormorant Garamond", "Noto Serif SC", serif;
+        }
+
+        #ui-layer {
+            position: absolute;
+            inset: 0;
+            z-index: 10;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 30px;
+            background: radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.4) 100%);
+        }
+
+        /* 顶部栏样式 */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .logo {
+            /* EN Font */
+            font-family: 'Pirata One', cursive;
+            font-size: 2.5rem;
+            color: var(--c-gold);
+            background: linear-gradient(to bottom, #fdf5e6 0%, #D4AF37 40%, #4a360d 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 2px;
+            font-weight: 400;
+            filter: drop-shadow(2px 2px 0px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 10px rgba(212, 175, 55, 0.5));
+            pointer-events: auto;
+            animation: occult-pulse 5s ease-in-out infinite alternate;
+        }
+
+        /* CN Font override for Logo */
+        body.lang-cn .logo {
+            font-family: 'Long Cang', cursive;
+        }
+
+        @keyframes occult-pulse {
+            0% {
+                transform: scale(1);
+                filter: brightness(1) drop-shadow(0 0 5px var(--c-gold));
+            }
+
+            100% {
+                transform: scale(1.01);
+                filter: brightness(1.2) drop-shadow(0 0 15px var(--c-gold));
+            }
+        }
+
+        /* 控件样式 */
+        .controls {
+            position: absolute;
+            right: 40px;
+            bottom: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: auto;
+            z-index: 100;
+        }
+
+        .btn {
+            font-family: 'Pirata One', cursive;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            padding: 8px 14px;
+            width: 220px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            color: var(--c-gold);
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: 0.3s;
+            text-transform: none;
+            backdrop-filter: blur(5px);
+            text-align: center;
+        }
+
+        body.lang-cn .btn {
+            font-family: 'Pirata One', 'Noto Serif SC', cursive;
+        }
+
+        .btn:hover,
+        .btn.active {
+            background: var(--c-gold);
+            color: #000;
+            border-color: var(--c-gold-light);
+        }
+
+        @keyframes btn-flash {
+            0% {
+                background: rgba(212, 175, 55, 0.8);
+                border-color: #fff;
+                color: #fff;
+            }
+
+            100% {
+                background: rgba(212, 175, 55, 0.2);
+                border-color: var(--c-gold);
+                color: #fff;
+            }
+        }
+
+        .btn-flash-active {
+            animation: btn-flash 0.4s ease-out;
+        }
+
+        /* 历史面板样式 */
+        .history {
+            width: 250px;
+            pointer-events: auto;
+            max-height: 260px;
+            overflow-y: auto;
+            padding-right: 10px;
+            -webkit-mask-image: linear-gradient(to bottom, black 90%, transparent 100%);
+            mask-image: linear-gradient(to bottom, black 90%, transparent 100%);
+        }
+
+        .h-group {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 15px;
+            backdrop-filter: blur(8px);
+            transition: all 0.4s ease;
+            opacity: 1;
+            /* 初始完全可见 */
+        }
+
+        .h-group:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--c-gold);
+        }
+
+        /* 只有第一组（本轮）有金色边框和发光 */
+        .h-group:first-child {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(212, 175, 55, 0.8);
+            animation: gold-glow 2s ease-in-out infinite alternate;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+            opacity: 1 !important;
+        }
+
+        /* 非本轮的历史组：整体初始透明度 */
+        .history .h-group:not(:first-child) {
+            opacity: 0.5;
+            /* 初始较暗 */
+            border-color: rgba(212, 175, 55, 0.1);
+        }
+
+        /* 非本轮的卡片缩略图：初始变暗（对标左下角） */
+        .history .h-group:not(:first-child) .h-thumb {
+            filter: brightness(0.4) saturate(0.8);
+            transition: filter 0.4s ease;
+            /* 图片亮度的过渡 */
+            opacity: 0.7;
+        }
+
+        /* --- 重点：悬停过渡设置 --- */
+
+        /* 鼠标悬停时：整体透明度恢复 */
+        .history .h-group:not(:first-child):hover {
+            opacity: 1;
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(212, 175, 55, 0.4);
+        }
+
+        /* 鼠标悬停时：卡片缩略图亮度平滑恢复 */
+        .history .h-group:not(:first-child):hover .h-thumb {
+            filter: brightness(0.8) saturate(1);
+            /* 恢复到接近原色但稍暗，保持高级感 */
+            opacity: 1;
+        }
+
+        @keyframes gold-glow {
+            0% {
+                border-color: rgba(212, 175, 55, 0.4);
+                box-shadow: 0 0 5px rgba(212, 175, 55, 0.05);
+            }
+
+            100% {
+                border-color: rgba(212, 175, 55, 1);
+                box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+            }
+        }
+
+        .h-group:first-child .h-group-title {
+            color: rgba(212, 175, 55, 1);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .h-group-title {
+            font-family: "Cinzel", "Noto Serif SC", serif;
+            font-size: 0.6rem;
+            color: rgba(212, 175, 55, 0.6);
+            margin-bottom: 8px;
+            text-align: left;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+            padding-bottom: 4px;
+        }
+
+        .h-item {
+            font-family: 'Cormorant Garamond', 'Noto Serif SC', serif;
+            font-weight: 600;
+            font-size: 1rem;
+            color: #ccc;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .h-item span {
+            color: var(--c-gold);
+            font-weight: 700;
+        }
+
+        .h-thumb {
+            width: 20px;
+            height: 34px;
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            border-radius: 2px;
+            background-size: cover;
+            background-position: center;
+            flex-shrink: 0;
+        }
+
+        .history::-webkit-scrollbar {
+            width: 0;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateX(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* 结果展示样式 */
+        #result-area {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            width: 100%;
+            opacity: 0;
+            transition: opacity 0.5s;
+            pointer-events: none;
+            mix-blend-mode: screen;
+            z-index: 20;
+        }
+
+        .card-name {
+            font-family: "Cinzel", serif;
+            font-size: 4rem;
+            color: var(--c-gold-light);
+            margin: 0;
+            text-shadow: 0 0 30px rgba(212, 175, 55, 0.8);
+            letter-spacing: 5px;
+        }
+
+        body.lang-cn .card-name {
+            font-family: "Ma Shan Zheng", "Cinzel", serif;
+        }
+
+        .card-desc {
+            font-family: 'Cormorant Garamond', 'Noto Serif SC', serif;
+            font-size: 1.6rem;
+            color: #ddd;
+            margin-top: 10px;
+            font-style: italic;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 4px #000;
+        }
+
+        .card-desc strong {
+            color: var(--c-gold);
+            font-family: "Cinzel", "Noto Serif SC", serif;
+            font-style: normal;
+            font-size: 1rem;
+            margin-right: 10px;
+            border: 1px solid rgba(212, 175, 55, 0.5);
+            padding: 2px 8px;
+        }
+
+        .guide {
+            font-family: "Cinzel", "Noto Serif SC", serif;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 0.8rem;
+            letter-spacing: 3px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        /* 加载器样式 */
+        #loader {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 1s;
+        }
+
+        .load-text {
+            font-family: 'Pirata One', 'Ma Shan Zheng', cursive;
+            margin-top: 15px;
+            color: var(--c-gold);
+            letter-spacing: 5px;
+            font-size: 1.2rem;
+        }
+
+        /* 手势光标样式 */
+        #cursor {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border: 2px solid rgba(212, 175, 55, 0.6);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 50;
+            transition: border-color 0.2s;
+            /* 移除了 transform 的过快过渡 */
+            display: none;
+            will-change: left, top;
+        }
+
+        #cursor::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 6px;
+            height: 6px;
+            background: var(--c-gold);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 10px var(--c-gold);
+        }
+
+        #cursor.fist {
+            transform: translate(-50%, -50%) scale(0.5);
+            background: rgba(212, 175, 55, 0.3);
+            border-color: #fff;
+        }
+
+        #input-video {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="loader">
+        <div
+            style="width: 40px; height: 40px; border: 2px solid #333; border-top: 2px solid #d4af37; border-radius: 50%; animation: spin 1s linear infinite;">
+        </div>
+        <div class="load-text" id="load-text">SUMMONING ARCANA</div>
+        <style>
+            @keyframes spin {
+                0% {
+                    transform: rotate(0deg);
+                }
+
+                100% {
+                    transform: rotate(360deg);
+                }
+            }
+        </style>
+    </div>
+
+    <div id="canvas-container"></div>
+    <div id="cursor"></div>
+
+    <div id="ui-layer">
+        <div class="top-bar">
+            <div>
+                <div class="logo" id="logo-text">ETHEREAL TAROT</div>
+                <div class="controls">
+                    <div id="mode-toggle" class="btn">Camera Off</div>
+                    <div id="shuffle-btn" class="btn">Shuffle Deck</div>
+                    <div id="lang-btn" class="btn">Language: EN</div>
+                </div>
+            </div>
+            <div class="history" id="history-box"></div>
+        </div>
+
+        <div id="result-area">
+            <h2 class="card-name" id="r-name">NAME</h2>
+            <div class="card-desc" id="r-desc">DESC</div>
+            <div style="margin-top:20px; font-size: 0.7rem; color: #666; letter-spacing: 2px;" id="click-tip">CLICK TO
+                DISMISS</div>
+        </div>
+
+        <div class="guide" id="guide-text">DRAG TO SCROLL • CLICK TO SELECT</div>
+    </div>
+
+    <video id="input-video"></video>
+
+    <script type="importmap">
+        { "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/" } }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+        import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+        import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+        import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+
+        // --- 数据与文案（牌组与UI文本） ---
+        const TAROT_EN = [
+            { n: "Fool", u: "New Beginning", r: "Recklessness", id: 0 }, { n: "Magician", u: "Power", r: "Trickery", id: 1 },
+            { n: "Priestess", u: "Intuition", r: "Secrets", id: 2 }, { n: "Empress", u: "Nature", r: "Smothering", id: 3 },
+            { n: "Emperor", u: "Authority", r: "Tyranny", id: 4 }, { n: "Hierophant", u: "Tradition", r: "Rebellion", id: 5 },
+            { n: "Lovers", u: "Love", r: "Disharmony", id: 6 }, { n: "Chariot", u: "Victory", r: "Defeat", id: 7 },
+            { n: "Strength", u: "Courage", r: "Weakness", id: 8 }, { n: "Hermit", u: "Soul Search", r: "Isolation", id: 9 },
+            { n: "Wheel", u: "Luck", r: "Bad Luck", id: 10 }, { n: "Justice", u: "Fairness", r: "Unfairness", id: 11 },
+            { n: "Hanged Man", u: "Sacrifice", r: "Stalling", id: 12 }, { n: "Death", u: "End", r: "Resistance", id: 13 },
+            { n: "Temperance", u: "Balance", r: "Imbalance", id: 14 }, { n: "Devil", u: "Addiction", r: "Freedom", id: 15 },
+            { n: "Tower", u: "Destruction", r: "Fear", id: 16 }, { n: "Star", u: "Hope", r: "Despair", id: 17 },
+            { n: "Moon", u: "Illusion", r: "Truth", id: 18 }, { n: "Sun", u: "Joy", r: "Sadness", id: 19 },
+            { n: "Judgement", u: "Absolution", r: "Doubt", id: 20 }, { n: "World", u: "Completion", r: "Incomplete", id: 21 }
+        ];
+
+        const TAROT_CN = [
+            { n: "愚者", u: "新的开始", r: "鲁莽", id: 0 }, { n: "魔术师", u: "力量", r: "欺骗", id: 1 },
+            { n: "女祭司", u: "直觉", r: "秘密", id: 2 }, { n: "皇后", u: "自然", r: "窒息", id: 3 },
+            { n: "皇帝", u: "权威", r: "暴政", id: 4 }, { n: "教皇", u: "传统", r: "叛逆", id: 5 },
+            { n: "恋人", u: "爱", r: "不和谐", id: 6 }, { n: "战车", u: "胜利", r: "失败", id: 7 },
+            { n: "力量", u: "勇气", r: "虚弱", id: 8 }, { n: "隐士", u: "灵魂搜索", r: "孤立", id: 9 },
+            { n: "命运之轮", u: "运气", r: "坏运气", id: 10 }, { n: "正义", u: "公平", r: "不公平", id: 11 },
+            { n: "倒吊人", u: "牺牲", r: "拖延", id: 12 }, { n: "死神", u: "结束", r: "抵抗", id: 13 },
+            { n: "节制", u: "平衡", r: "不平衡", id: 14 }, { n: "恶魔", u: "成瘾", r: "自由", id: 15 },
+            { n: "高塔", u: "毁灭", r: "恐惧", id: 16 }, { n: "星星", u: "希望", r: "绝望", id: 17 },
+            { n: "月亮", u: "幻觉", r: "真相", id: 18 }, { n: "太阳", u: "喜悦", r: "悲伤", id: 19 },
+            { n: "审判", u: "赦免", r: "怀疑", id: 20 }, { n: "世界", u: "完成", r: "不完整", id: 21 }
+        ];
+
+        const UI_TEXT = {
+            en: {
+                logo: "ETHEREAL TAROT",
+                camOff: "Camera Off",
+                camOn: "Switch to Mouse",
+                shuffle: "Shuffle Deck",
+                langLabel: "Language: EN",
+                guideMouse: "DRAG TO SCROLL • CLICK TO SELECT",
+                guideHand: "Palm: Scroll • Fist: Select",
+                clickTip: "CLICK TO DISMISS",
+                clickTipHand: "OPEN PALM TO DISMISS",
+                spreadTip: "CLICK TO RESET DECK",
+                spreadTipHand: "FIST TO RESET DECK",
+                spreadDesc: "PAST • PRESENT • FUTURE",
+                reviewDesc: "REVIEWING SESSION",
+                reviewTip: "CLICK TO DISMISS",
+                rev: "REVERSED",
+                upr: "UPRIGHT",
+                revShort: "Rev.",
+                uprShort: "Upr.",
+                loading: "SUMMONING ARCANA",
+                historyTitle: "READING SESSION",
+                posNames: ["PAST", "PRESENT", "FUTURE"],
+                defaultArcana: "ARCANA"
+            },
+            cn: {
+                logo: "虚幻卡罗牌",
+                camOff: "摄像头已关",
+                camOn: "切换至鼠标",
+                shuffle: "洗牌",
+                langLabel: "语言：中",
+                guideMouse: "拖拽以滚动 • 点击以选择",
+                guideHand: "手掌：滚动 • 握拳：选择",
+                clickTip: "点击以取消显示",
+                clickTipHand: "张开手掌以取消显示",
+                spreadTip: "点击以重置牌组",
+                spreadTipHand: "握拳以重置牌组",
+                spreadDesc: "过去 • 现在 • 未来",
+                reviewDesc: "回顾环节",
+                reviewTip: "点击以取消显示",
+                rev: "逆位",
+                upr: "正位",
+                revShort: "逆",
+                uprShort: "正",
+                loading: "召唤阿尔卡纳中",
+                historyTitle: "占卜环节",
+                posNames: ["过去", "现在", "未来"],
+                defaultArcana: "阿尔卡纳"
+            }
+        };
+
+        // 当前语言设置
+        let curLang = 'en';
+        const IMG_URL = "./";
+        const BACK_URL = "./bm4.png";
+
+        // --- 三维场景与渲染 ---
+        // 初始化 scene、camera、renderer 与灯光
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x050505);
+        scene.fog = new THREE.FogExp2(0x050505, 0.015);
+
+        const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 100);
+        camera.position.set(0, 0, 16);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: "high-performance" });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.1;
+        container.appendChild(renderer.domElement);
+
+        const composer = new EffectComposer(renderer);
+        composer.addPass(new RenderPass(scene, camera));
+        const bloom = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
+        bloom.threshold = 0.2; bloom.strength = 0.5; bloom.radius = 0.5;
+        composer.addPass(bloom);
+        composer.addPass(new OutputPass());
+
+        const ambLight = new THREE.AmbientLight(0xffffff, 1.0);
+        scene.add(ambLight);
+
+        const topLight = new THREE.SpotLight(0xffd700, 8);
+        topLight.position.set(0, 15, 5);
+        topLight.angle = 0.6; topLight.penumbra = 0.5;
+        scene.add(topLight);
+
+        const frontLight = new THREE.PointLight(0xffeedd, 0.8, 30);
+        frontLight.position.set(0, 2, 15);
+        scene.add(frontLight);
+
+        scene.add(new THREE.PointLight(0x4466ff, 3.0, 25).translateY(0).translateX(-10).translateZ(-5));
+        scene.add(new THREE.PointLight(0x4466ff, 3.0, 25).translateY(0).translateX(10).translateZ(-5));
+
+        // --- 全局状态对象 ---
+        const STATE = {
+            mode: 'MOUSE',
+            cards: [], data: [], activeCards: [], discardPile: [],
+            offset: 0, velocity: 0,
+            phase: 'INTRO',
+            selected: null,
+            handX: 0.5, handY: 0.5, targetHandX: 0.5, targetHandY: 0.5, isHandVisible: false,
+            isFist: false, fistFrames: 0,
+            isDrag: false, lastX: 0, startX: 0, startY: 0,
+            mousePos: new THREE.Vector2(),
+            raycaster: new THREE.Raycaster(),
+            isHoveringUI: false
+        };
+        // 纹理加载器
+        const TEX_LOADER = new THREE.TextureLoader();
+
+        // --- 辅助函数 ---
+        function getScreenBounds() {
+            const vFOV = THREE.MathUtils.degToRad(camera.fov);
+            const height = 2 * Math.tan(vFOV / 2) * camera.position.z;
+            const width = height * camera.aspect;
+            return { left: -width / 2, bottom: -height / 2 };
+        }
+
+        // --- 语言与UI文本更新 ---
+        function getTarotData(id) {
+            return curLang === 'en' ? TAROT_EN[id] : TAROT_CN[id];
+        }
+
+        function getText() {
+            return UI_TEXT[curLang];
+        }
+
+        function updateUIText() {
+            const T = getText();
+            document.getElementById('logo-text').innerText = T.logo;
+            document.getElementById('shuffle-btn').innerText = T.shuffle;
+            document.getElementById('lang-btn').innerText = T.langLabel;
+
+            const modeToggle = document.getElementById('mode-toggle');
+            modeToggle.innerText = STATE.mode === 'MOUSE' ? T.camOff : T.camOn;
+
+            const guide = document.getElementById('guide-text');
+            guide.innerText = STATE.mode === 'MOUSE' ? T.guideMouse : T.guideHand;
+
+            const loadText = document.querySelector('.load-text');
+            if (loadText) loadText.innerText = T.loading;
+
+            // 如果当前正在展示卡牌结果，更新结果文字
+            if (STATE.phase === 'SHOW' && STATE.selected) {
+                const id = STATE.selected.userData.id;
+                const d = getTarotData(id);
+                const isRev = STATE.data[id].isRev; // Use stored rev state
+                document.getElementById('r-name').innerText = d.n;
+                document.getElementById('r-desc').innerHTML = `<strong>${isRev ? T.rev : T.upr}</strong> ${isRev ? d.r : d.u}`;
+                document.getElementById('click-tip').innerText = STATE.mode === 'HAND' ? T.clickTipHand : T.clickTip;
+            } else if (STATE.phase === 'SPREAD_VIEW') {
+                const names = STATE.discardPile.map(mesh => {
+                    const d = getTarotData(mesh.userData.id);
+                    const isRev = STATE.data[mesh.userData.id].isRev;
+                    return isRev ? `${d.n} (${T.revShort})` : d.n;
+                });
+                document.getElementById('r-name').innerText = names.join("  •  ");
+                document.getElementById('r-desc').innerHTML = T.spreadDesc;
+                document.getElementById('click-tip').innerText = STATE.mode === 'HAND' ? T.spreadTipHand : T.spreadTip;
+            } else if (STATE.phase === 'REVIEW_VIEW') {
+                // 重新计算名字串，因为语言变了
+                const hBox = document.getElementById('history-box');
+                // 找到最近的组
+                const groups = hBox.querySelectorAll('.h-group');
+                if (groups.length > 0) {
+                    const snapshots = groups[0].userData.snapshots;
+                    const names = snapshots.map(s => {
+                        const d = getTarotData(s.id);
+                        return s.isRev ? `${d.n} (${T.revShort})` : d.n;
+                    });
+                    document.getElementById('r-name').innerText = names.join("  •  ");
+                }
+                document.getElementById('r-desc').innerHTML = T.reviewDesc;
+                document.getElementById('click-tip').innerText = T.reviewTip;
+            }
+        }
+
+        const langBtn = document.getElementById('lang-btn');
+        langBtn.onclick = () => {
+            // 1. Toggle Language
+            curLang = curLang === 'en' ? 'cn' : 'en';
+            document.body.classList.toggle('lang-cn', curLang === 'cn');
+
+            // 2. Full Reset Logic ("Like just opened")
+            // A. Reset UI elements
+            document.getElementById('result-area').style.opacity = 0;
+            const hBox = document.getElementById('history-box');
+
+            // B. Clean up 3D clones in history before clearing DOM
+            const groups = hBox.querySelectorAll('.h-group');
+            groups.forEach(g => {
+                if (g.userData && g.userData.clones) {
+                    g.userData.clones.forEach(c => {
+                        scene.remove(c);
+                        if (c.geometry) c.geometry.dispose();
+                    });
+                }
+            });
+            hBox.innerHTML = ''; // Clear history DOM
+
+            // C. Reset internal state
+            STATE.discardPile = [];
+            STATE.activeCards = []; // performShuffleAndSpin will repopulate this
+            STATE.selected = null;
+            STATE.phase = 'IDLE';
+            STATE.velocity = Math.random() * 2.5 + 2.5;
+
+            // D. Reset Card Orientations (re-randomize upright/reversed for a fresh deck feel)
+            STATE.cards.forEach(m => {
+                const isRev = Math.random() > 0.5;
+                STATE.data[m.userData.id].isRev = isRev;
+                m.visible = true; // Make sure they are visible
+            });
+
+            // E. Reset Input Mode to Mouse (to be strictly "like just opened")
+            if (STATE.mode === 'HAND') {
+                // Manually trigger click to reset UI and stop camera
+                document.getElementById('mode-toggle').click();
+            }
+
+            // F. Update Text & Reshuffle positions
+            updateUIText();
+            performShuffleAndSpin();
+
+            // Flash effect for the button
+            langBtn.classList.add('btn-flash-active');
+            setTimeout(() => { langBtn.classList.remove('btn-flash-active'); }, 400);
+        };
+
+        // --- 卡片生成 ---
+        function createCard(tex, i, isRev) {
+            const geo = new THREE.BoxGeometry(2.6, 4.4, 0.03);
+            tex.colorSpace = THREE.SRGBColorSpace;
+            const matSide = new THREE.MeshStandardMaterial({ color: 0x000000, roughness: 1.0, metalness: 0.0 });
+            const matFace = new THREE.MeshStandardMaterial({ map: tex, roughness: 0.4, metalness: 0.1, emissive: 0x111111 });
+            let backTex = TEX_LOADER.load(BACK_URL);
+            backTex.colorSpace = THREE.SRGBColorSpace;
+            const matBack = new THREE.MeshStandardMaterial({
+                map: backTex, color: 0xffffff, roughness: 0.4, metalness: 0.3,
+                emissive: 0xffeebb, emissiveMap: backTex, emissiveIntensity: 1.0
+            });
+            const mesh = new THREE.Mesh(geo, [matSide, matSide, matSide, matSide, matBack, matFace]);
+            mesh.rotation.z = isRev ? Math.PI : 0;
+            mesh.userData = { id: i, originalIndex: i, isRev, seed: Math.random() };
+            mesh.position.set(0, 0, -30);
+            scene.add(mesh);
+            STATE.cards[i] = mesh;
+        }
+
+        // --- 占位纹理生成 ---
+        function getFallbackTexture(text) {
+            const cvs = document.createElement('canvas'); cvs.width = 512; cvs.height = 800;
+            const ctx = cvs.getContext('2d');
+            const grd = ctx.createRadialGradient(256, 400, 0, 256, 400, 400);
+            grd.addColorStop(0, '#2b2b2b'); grd.addColorStop(1, '#000000');
+            ctx.fillStyle = grd; ctx.fillRect(0, 0, 512, 800);
+            ctx.strokeStyle = '#d4af37'; ctx.lineWidth = 15; ctx.strokeRect(30, 30, 452, 740);
+            ctx.fillStyle = '#F9EDC3'; ctx.font = 'bold 60px serif'; ctx.textAlign = 'center';
+            ctx.fillText(text.toUpperCase(), 256, 400);
+            return new THREE.CanvasTexture(cvs);
+        }
+
+        // --- 牌组初始化 ---
+        function initDeck() {
+            const indices = Array.from({ length: 22 }, (_, i) => i);
+            let loaded = 0;
+            indices.forEach((id, idx) => {
+                // Initialize with EN data structure for IDs, text fetched dynamically later
+                const d = TAROT_EN[id];
+                const isRev = Math.random() > 0.5;
+                STATE.data[idx] = { id: d.id, isRev }; // Only store ID and State
+                TEX_LOADER.load(
+                    IMG_URL + (d.id) + ".jpg",
+                    (t) => { createCard(t, idx, isRev); checkLoad(); },
+                    undefined,
+                    () => { createCard(getFallbackTexture(d.n), idx, isRev); checkLoad(); }
+                );
+            });
+
+            function checkLoad() {
+                loaded++;
+                if (loaded === 22) {
+                    const l = document.getElementById('loader');
+                    if (l) { l.style.opacity = 0; setTimeout(() => l.remove(), 1000); }
+                    performShuffleAndSpin();
+                }
+            }
+        }
+
+        // --- 洗牌与重置 ---
+        function performShuffleAndSpin() {
+            STATE.cards.forEach(m => {
+                m.position.set(0, 0, -30); m.rotation.set(0, 0, 0); m.scale.setScalar(1.1);
+                m.visible = true; // 确保重新洗牌后所有原牌可见
+            });
+            STATE.activeCards = Array.from({ length: 22 }, (_, i) => i);
+            STATE.discardPile = [];
+            STATE.selected = null;
+            STATE.activeCards.sort(() => Math.random() - 0.5);
+            STATE.phase = 'IDLE';
+            STATE.velocity = Math.random() * 2.5 + 2.5;
+            const T = getText();
+            const tip = document.getElementById('click-tip');
+            tip.innerText = STATE.mode === 'HAND' ? T.clickTipHand : T.clickTip;
+        }
+
+        // --- 动画与更新循环 ---
+        function update(dt) {
+            if (STATE.isHoveringUI) { STATE.velocity = 0; }
+            if (STATE.phase !== 'IDLE' && STATE.phase !== 'SCROLL') return;
+            if (STATE.mode === 'HAND') {
+                const diff = STATE.handX - 0.5;
+                if (Math.abs(diff) > 0.1) STATE.velocity += (diff > 0 ? 1 : -1) * (Math.abs(diff) - 0.1) * 0.1;
+                STATE.mousePos.set(STATE.handX * 2 - 1, -(0.5 * 2 - 1));
+            }
+            STATE.velocity *= 0.95;
+            if (Math.abs(STATE.velocity) < 0.0005 && STATE.mode === 'MOUSE') STATE.velocity = 0;
+            STATE.offset -= STATE.velocity;
+
+            const SPACING = 5.5;
+            const count = STATE.activeCards.length;
+            if (count === 0) return;
+            const TOTAL_WIDTH = count * SPACING;
+
+            STATE.raycaster.setFromCamera(STATE.mousePos, camera);
+            const activeMeshes = STATE.activeCards.map(id => STATE.cards[id]);
+            const intersects = STATE.raycaster.intersectObjects(activeMeshes);
+            const hoveredMesh = intersects.length > 0 ? intersects[0].object : null;
+
+            STATE.activeCards.forEach((idx, i) => {
+                const m = STATE.cards[idx];
+                if (STATE.phase === 'FLYING' || m === STATE.selected) return;
+
+                let x = i * SPACING + STATE.offset;
+                const half = TOTAL_WIDTH / 2;
+                while (x > half) x -= TOTAL_WIDTH;
+                while (x < -half) x += TOTAL_WIDTH;
+
+                const dist = Math.abs(x);
+                let targetZ = -Math.pow(dist / 1.8, 1.15);
+                targetZ = Math.max(targetZ, -40);
+
+                if (hoveredMesh === m && Math.abs(x) < 8.0) targetZ += 1;
+
+                const maxAngle = Math.PI / 1.7;
+                const transition = x / 4.0;
+                const targetRotY = -(transition / Math.sqrt(1 + transition * transition)) * maxAngle;
+
+                if (Math.abs(x - m.position.x) > SPACING * 3) {
+                    m.position.x = x;
+                    m.rotation.y = targetRotY;
+                } else {
+                    m.position.x += (x - m.position.x) * 0.12;
+                }
+                m.position.y += (Math.sin(dt * 2 + i) * 0.15 - m.position.y) * 0.1;
+                m.position.z += (targetZ - m.position.z) * 0.1;
+
+                let currentRotY = m.rotation.y;
+                let diffY = targetRotY - currentRotY;
+                while (diffY < -Math.PI) diffY += Math.PI * 2;
+                while (diffY > Math.PI) diffY -= Math.PI * 2;
+                m.rotation.y += diffY * 0.05;
+
+                const d = STATE.data[m.userData.id];
+                const targetRotZ = d.isRev ? Math.PI : 0;
+                let diffZ = targetRotZ - m.rotation.z;
+                while (diffZ < -Math.PI) diffZ += Math.PI * 2;
+                while (diffZ > Math.PI) diffZ -= Math.PI * 2;
+                m.rotation.z += diffZ * 0.03;
+
+                m.rotation.x *= 0.9;
+                const baseScale = 1.1;
+                m.scale.setScalar(dist < 2.0 ? baseScale + (2.0 - dist) * 0.11 : baseScale);
+            });
+        }
+
+        // --- 选择与翻牌逻辑 ---
+        function selectCard(clientX, clientY) {
+            if (STATE.activeCards.length === 0) return;
+            const raycaster = new THREE.Raycaster();
+            const mouse = new THREE.Vector2();
+            if (clientX !== undefined && clientY !== undefined) {
+                mouse.x = (clientX / window.innerWidth) * 2 - 1;
+                mouse.y = -(clientY / window.innerHeight) * 2 + 1;
+            } else { mouse.x = 0; mouse.y = 0; }
+
+            raycaster.setFromCamera(mouse, camera);
+            const activeMeshes = STATE.activeCards.map(id => STATE.cards[id]);
+            const intersects = raycaster.intersectObjects(activeMeshes);
+
+            if (intersects.length > 0) {
+                const m = intersects[0].object;
+                if (Math.abs(m.position.x) > 8.0) return;
+
+                STATE.phase = 'FLIP'; STATE.selected = m;
+                const d = STATE.data[m.userData.id]; // get state (isRev, id)
+
+                // 简短：对当前 Z 角度做数值归一化以避免累积圈数
+                const targetZ = d.isRev ? Math.PI : 0;
+                const diffZ = m.rotation.z - targetZ;
+                const turns = Math.round(diffZ / (Math.PI * 2));
+                m.rotation.z -= turns * Math.PI * 2;
+
+                const startP = m.position.clone();
+                const startR = m.rotation.clone(); // 现在这里克隆的是净化后的角度
+                const endP = new THREE.Vector3(0, 0, 8);
+
+                let p = 0;
+                function flip() {
+                    p += 0.02; const ease = 1 - Math.pow(1 - p, 3);
+                    m.position.lerpVectors(startP, endP, ease);
+
+                    // Y轴：左右翻转 (从当前角度转到 PI)
+                    m.rotation.y = THREE.MathUtils.lerp(startR.y, Math.PI, ease);
+
+                    // Z轴：正逆位调整 (因为上面已经净化过数据，这里几乎不会产生视觉旋转，或者只是微调)
+                    m.rotation.z = THREE.MathUtils.lerp(startR.z, targetZ, ease);
+
+                    // X轴：修正倾斜 (归零，防止看起来像跟头)
+                    m.rotation.x = THREE.MathUtils.lerp(startR.x, 0, ease);
+
+                    if (p < 1) requestAnimationFrame(flip);
+                    else { STATE.phase = 'SHOW'; showUI(d); }
+                }
+                flip();
+            }
+        }
+
+        // --- 收牌逻辑 ---
+        function dismiss() {
+            if (!STATE.selected || STATE.phase === 'FLYING') return;
+            document.getElementById('result-area').style.opacity = 0;
+            const m = STATE.selected;
+            STATE.discardPile.push(m);
+            STATE.activeCards = STATE.activeCards.filter(id => id !== m.userData.id);
+            if (STATE.discardPile.length >= 3) {
+                flyToSpreadView();
+            } else {
+                STATE.phase = 'FLYING';
+                flyToCorner(m, STATE.discardPile.length - 1);
+            }
+        }
+
+        // --- 飞回角落动画 ---
+        function flyToCorner(m, stackIdx) {
+            const bounds = getScreenBounds();
+            const targetX = bounds.left + 1.0 + (stackIdx * 1.4);
+            const targetY = bounds.bottom + 1.4;
+            const startP = m.position.clone(); const startS = m.scale.x;
+            const startR = m.rotation.clone();
+            let p = 0;
+            function anim() {
+                p += 0.05; const ease = p * p;
+                m.position.x = THREE.MathUtils.lerp(startP.x, targetX, ease);
+                m.position.y = THREE.MathUtils.lerp(startP.y, targetY, ease);
+                m.position.z = THREE.MathUtils.lerp(startP.z, 0, ease);
+                m.rotation.x = THREE.MathUtils.lerp(startR.x, 0, ease);
+                m.rotation.y = THREE.MathUtils.lerp(startR.y, Math.PI, ease);
+                m.scale.setScalar(THREE.MathUtils.lerp(startS, 0.35, ease));
+                if (p < 1) requestAnimationFrame(anim);
+                else {
+                    if (STATE.phase === 'FLYING') {
+                        STATE.selected = null; STATE.phase = 'IDLE'; STATE.velocity = Math.random() * 2.5 + 2.5;
+                    }
+                }
+            }
+            anim();
+        }
+
+        // --- 展开阅读视图 ---
+        function flyToSpreadView() {
+            STATE.phase = 'SPREAD_VIEW';
+            STATE.selected = null;
+            const T = getText();
+            const names = STATE.discardPile.map(mesh => {
+                const cardState = STATE.data[mesh.userData.id];
+                const d = getTarotData(mesh.userData.id);
+                return cardState.isRev ? `${d.n} (${T.revShort})` : d.n;
+            });
+            const targets = [{ x: -4.5, y: 0, z: 5 }, { x: 0.0, y: 0, z: 5 }, { x: 4.5, y: 0, z: 5 }];
+            const starts = STATE.discardPile.map(mesh => ({ p: mesh.position.clone(), r: mesh.rotation.clone(), s: mesh.scale.x }));
+            let p = 0;
+            function anim() {
+                p += 0.02; const ease = 1 - Math.pow(1 - p, 3);
+                STATE.discardPile.forEach((mesh, i) => {
+                    mesh.position.set(
+                        THREE.MathUtils.lerp(starts[i].p.x, targets[i].x, ease),
+                        THREE.MathUtils.lerp(starts[i].p.y, targets[i].y, ease),
+                        THREE.MathUtils.lerp(starts[i].p.z, targets[i].z, ease)
+                    );
+                    const d = STATE.data[mesh.userData.id];
+                    const targetZ = d.isRev ? Math.PI : 0;
+                    mesh.rotation.set(
+                        THREE.MathUtils.lerp(starts[i].r.x, 0, ease),
+                        THREE.MathUtils.lerp(starts[i].r.y, Math.PI, ease),
+                        THREE.MathUtils.lerp(starts[i].r.z, targetZ, ease)
+                    );
+                    mesh.scale.setScalar(THREE.MathUtils.lerp(starts[i].s, 1.2, ease));
+                });
+                if (p < 1) requestAnimationFrame(anim);
+                else {
+                    document.getElementById('r-name').innerText = names.join("  •  ");
+                    document.getElementById('r-desc').innerHTML = T.spreadDesc;
+                    document.getElementById('click-tip').innerText = STATE.mode === 'HAND' ? T.spreadTipHand : T.spreadTip;
+                    document.getElementById('result-area').style.opacity = 1;
+                }
+            }
+            anim();
+        }
+
+        // --- 收回展开并恢复牌组 ---
+        function resetSpread() {
+            if (STATE.phase !== 'SPREAD_VIEW') return;
+            STATE.phase = 'FLYING';
+            document.getElementById('result-area').style.opacity = 0;
+
+            // 获取当前历史组，以便我们将牌替换为副本
+            const hBox = document.getElementById('history-box');
+            const targetGroup = hBox.querySelector('.h-group');
+
+            const starts = STATE.discardPile.map(m => ({ p: m.position.clone(), r: m.rotation.clone(), s: m.scale.x }));
+            let p = 0;
+            function anim() {
+                p += 0.04; const ease = 1 - Math.pow(1 - p, 3);
+                STATE.discardPile.forEach((m, i) => {
+                    m.position.lerpVectors(starts[i].p, new THREE.Vector3(0, 0, -20), ease);
+                    m.rotation.x = THREE.MathUtils.lerp(starts[i].r.x, 0, ease);
+                    m.rotation.y = THREE.MathUtils.lerp(starts[i].r.y, 0, ease);
+                    m.rotation.z = THREE.MathUtils.lerp(starts[i].r.z, 0, ease);
+                    m.scale.setScalar(THREE.MathUtils.lerp(starts[i].s, 0.8, ease));
+                });
+                if (p < 1) requestAnimationFrame(anim);
+                else {
+                    // 简短：收回时隐藏原牌（历史使用克隆）
+                    STATE.discardPile.forEach((m, i) => { m.visible = false; });
+                    performShuffleAndSpin();
+                }
+            }
+            anim();
+        }
+
+        // --- 显示结果并记录历史 ---
+        function showUI(dataState) {
+            const T = getText();
+            const d = getTarotData(dataState.id);
+            const isRev = dataState.isRev;
+
+            document.getElementById('r-name').innerText = d.n;
+            document.getElementById('r-desc').innerHTML = `<strong>${isRev ? T.rev : T.upr}</strong> ${isRev ? d.r : d.u}`;
+            document.getElementById('result-area').style.opacity = 1;
+
+            const hBox = document.getElementById('history-box');
+            const currentCount = STATE.discardPile.length;
+            let targetGroup;
+
+            if (currentCount === 0) {
+                targetGroup = document.createElement('div');
+                targetGroup.className = 'h-group';
+                targetGroup.id = 'latest-group-' + Date.now();
+                targetGroup.userData = { clones: [], snapshots: [] };
+                targetGroup.innerHTML = `<div class="h-group-title">${T.historyTitle}</div>`;
+                targetGroup.onclick = (e) => {
+                    e.stopPropagation();
+                    if (targetGroup.userData.clones.length === 3 && STATE.phase !== 'REVIEW_VIEW') {
+                        showReviewSpread(targetGroup);
+                    }
+                };
+                hBox.prepend(targetGroup);
+            } else {
+                targetGroup = hBox.querySelector('.h-group');
+            }
+
+            // 克隆当前卡牌并加入历史（原牌保留或隐藏）
+            const originalMesh = STATE.selected;
+            const clone = originalMesh.clone();
+            clone.visible = false; // 初始不可见，只在查看历史时显示
+            scene.add(clone);
+
+            targetGroup.userData.clones.push(clone);
+            targetGroup.userData.snapshots.push({
+                isRev: isRev,
+                n: d.n, id: d.id // Store ID so we can translate later if needed
+            });
+
+            if (targetGroup.userData.clones.length === 3) targetGroup.style.cursor = 'pointer';
+
+            const div = document.createElement('div');
+            div.className = 'h-item';
+            div.style.alignItems = 'center'; div.style.gap = '10px';
+            const thumbUrl = `${IMG_URL}${d.id}.jpg`;
+            div.innerHTML = `
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <div class="h-thumb" style="background-image: url('${thumbUrl}'); ${isRev ? 'transform: rotate(180deg);' : ''}"></div>
+                    <div>
+                        <small style="color:#666; font-size:0.6rem;">${T.posNames[currentCount] || T.defaultArcana}</small>
+                        <div style="font-size:0.9rem;"><span>${isRev ? T.revShort : T.uprShort}</span> ${d.n}</div>
+                    </div>
+                </div>
+            `;
+            targetGroup.appendChild(div);
+            requestAnimationFrame(() => hBox.scrollTo({ top: 0, behavior: 'smooth' }));
+        }
+
+        // --- 历史回顾视图 ---
+        function showReviewSpread(targetGroup) {
+            const T = getText();
+            const clones = targetGroup.userData.clones;
+            const snapshots = targetGroup.userData.snapshots;
+            const bounds = getScreenBounds();
+
+            STATE.phase = 'REVIEW_VIEW';
+            STATE.selected = null;
+
+            const names = snapshots.map(s => {
+                const d = getTarotData(s.id);
+                return s.isRev ? `${d.n} (${T.revShort})` : d.n;
+            });
+            const targets = [{ x: -4.5, y: 0, z: 5 }, { x: 0, y: 0, z: 5 }, { x: 4.5, y: 0, z: 5 }];
+
+            clones.forEach((c, i) => {
+                c.visible = true;
+                // 将克隆体位置重置到左下角暂存区，准备起飞
+                c.position.set(bounds.left + 1.8 + (i * 1.4), bounds.bottom + 1.5, 0);
+                c.scale.setScalar(0.35);
+                c.rotation.set(0, Math.PI, snapshots[i].isRev ? Math.PI : 0);
+            });
+
+            const starts = clones.map(c => ({ p: c.position.clone(), r: c.rotation.clone(), s: c.scale.x }));
+            let p = 0;
+            function anim() {
+                p += 0.03; const ease = 1 - Math.pow(1 - p, 3);
+                clones.forEach((c, i) => {
+                    c.position.lerpVectors(starts[i].p, new THREE.Vector3(targets[i].x, targets[i].y, targets[i].z), ease);
+                    const snapIsRev = snapshots[i].isRev;
+                    c.rotation.y = THREE.MathUtils.lerp(starts[i].r.y, Math.PI, ease);
+                    c.rotation.z = THREE.MathUtils.lerp(starts[i].r.z, snapIsRev ? Math.PI : 0, ease);
+                    c.scale.setScalar(THREE.MathUtils.lerp(starts[i].s, 1.2, ease));
+                });
+                if (p < 1) requestAnimationFrame(anim);
+                else {
+                    document.getElementById('r-name').innerText = names.join("  •  ");
+                    document.getElementById('r-desc').innerHTML = T.reviewDesc;
+                    document.getElementById('click-tip').innerText = T.reviewTip;
+                    document.getElementById('result-area').style.opacity = 1;
+                }
+            }
+            anim();
+        }
+
+        // --- UI 事件：按钮处理 ---
+        const shuffleBtn = document.getElementById('shuffle-btn');
+        shuffleBtn.onclick = () => {
+            if (STATE.phase === 'SHOW') dismiss();
+            if (STATE.phase === 'SPREAD_VIEW') resetSpread();
+            STATE.velocity = Math.random() * 2.5 + 1.5;
+            STATE.activeCards.forEach(idx => {
+                const m = STATE.cards[idx];
+                STATE.data[m.userData.id].isRev = Math.random() > 0.5;
+                const dir = Math.random() > 0.5 ? 1 : -1;
+                m.rotation.z = dir * (Math.random() * 1.5 + 3.5) * Math.PI * 2;
+            });
+            STATE.activeCards.sort(() => Math.random() - 0.5);
+            shuffleBtn.classList.add('btn-flash-active');
+            setTimeout(() => { shuffleBtn.classList.remove('btn-flash-active'); }, 400);
+        };
+
+        // --- 鼠标交互 ---
+        window.addEventListener('mousedown', e => {
+            if (STATE.mode === 'MOUSE') {
+                STATE.isDrag = true; STATE.lastX = e.clientX; STATE.startX = e.clientX; STATE.startY = e.clientY;
+            }
+        });
+        window.addEventListener('mouseup', () => STATE.isDrag = false);
+        window.addEventListener('mousemove', e => {
+            if (STATE.mode === 'MOUSE') {
+                STATE.mousePos.x = (e.clientX / window.innerWidth) * 2 - 1;
+                STATE.mousePos.y = -(e.clientY / window.innerHeight) * 2 + 1;
+                if (STATE.isDrag && !STATE.isHoveringUI) {
+                    const dx = e.clientX - STATE.lastX; STATE.lastX = e.clientX; STATE.velocity += dx * 0.002;
+                }
+            }
+        });
+        window.addEventListener('click', (e) => {
+            if (e.target.closest('.btn') || e.target.closest('.h-group')) return;
+            if (STATE.mode === 'MOUSE') {
+                const moveDist = Math.hypot(e.clientX - STATE.startX, e.clientY - STATE.startY);
+                if (moveDist < 10) {
+                    if (STATE.phase === 'IDLE') selectCard(e.clientX, e.clientY);
+                    else if (STATE.phase === 'SHOW') dismiss();
+                    else if (STATE.phase === 'REVIEW_VIEW') {
+                        // 简短：关闭回顾视图并将克隆飞回角落
+                        document.getElementById('result-area').style.opacity = 0;
+                        const bounds = getScreenBounds();
+                        const groups = document.querySelectorAll('.h-group');
+                        groups.forEach(g => {
+                            if (g.userData && g.userData.clones) {
+                                g.userData.clones.forEach((c, i) => {
+                                    const targetX = bounds.left + 1.8 + (i * 1.4);
+                                    const targetY = bounds.bottom + 1.5;
+                                    const startP = c.position.clone();
+                                    const startS = c.scale.x;
+                                    let p2 = 0;
+                                    function animBack() {
+                                        p2 += 0.04; const ease = p2 * p2;
+                                        c.position.set(THREE.MathUtils.lerp(startP.x, targetX, ease), THREE.MathUtils.lerp(startP.y, targetY, ease), THREE.MathUtils.lerp(startP.z, 0, ease));
+                                        c.scale.setScalar(THREE.MathUtils.lerp(startS, 0.35, ease));
+                                        if (p2 < 1) requestAnimationFrame(animBack);
+                                        else c.visible = false;
+                                    }
+                                    animBack();
+                                });
+                            }
+                        });
+                        STATE.phase = 'IDLE';
+                        setTimeout(() => { if (STATE.phase === 'IDLE') STATE.velocity = Math.random() * 2.5 + 2.5; }, 300);
+                    }
+                    else if (STATE.phase === 'SPREAD_VIEW') resetSpread();
+                }
+            }
+        });
+        window.addEventListener('wheel', e => {
+            if (STATE.mode === 'MOUSE' && STATE.phase === 'IDLE' && !STATE.isHoveringUI) { STATE.velocity -= e.deltaY * 0.001; }
+        });
+
+        // --- 模式切换与光标 ---
+        const toggle = document.getElementById('mode-toggle');
+        const cursor = document.getElementById('cursor');
+        toggle.onclick = () => {
+            STATE.mode = STATE.mode === 'MOUSE' ? 'HAND' : 'MOUSE';
+            const T = getText();
+            if (STATE.mode === 'HAND') {
+                toggle.innerText = T.camOn; toggle.classList.add('active');
+                document.getElementById('guide-text').innerText = T.guideHand;
+                startCam();
+            } else {
+                toggle.innerText = T.camOff; toggle.classList.remove('active');
+                document.getElementById('guide-text').innerText = T.guideMouse;
+                cursor.style.display = 'none';
+                const v = document.getElementById('input-video');
+                if (v.srcObject) { v.srcObject.getTracks().forEach(track => track.stop()); v.srcObject = null; }
+                camStarted = false;
+            }
+            // Update tips if spread/show is active
+            const tip = document.getElementById('click-tip');
+            if (STATE.phase === 'SHOW') tip.innerText = STATE.mode === 'HAND' ? T.clickTipHand : T.clickTip;
+            if (STATE.phase === 'SPREAD_VIEW') tip.innerText = STATE.mode === 'HAND' ? T.spreadTipHand : T.spreadTip;
+        };
+
+        // --- 手势识别与摄像头 ---
+        let camStarted = false;
+        const hands = new Hands({ locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}` });
+        hands.setOptions({ maxNumHands: 1, minDetectionConfidence: 0.5, modelComplexity: 0 });
+
+        // MediaPipe 结果回调（更新状态）
+        hands.onResults(res => {
+            if (STATE.mode !== 'HAND') return;
+            if (res.multiHandLandmarks && res.multiHandLandmarks.length > 0) {
+                STATE.isHandVisible = true;
+                const lm = res.multiHandLandmarks[0];
+                const wrist = lm[0];
+                let dist = 0;
+                [4, 8, 12, 16, 20].forEach(i => dist += Math.hypot(lm[i].x - wrist.x, lm[i].y - wrist.y));
+                const isFist = (dist / 5) < 0.25;
+
+                // 目标坐标
+                STATE.targetHandX = 1 - lm[9].x;
+                STATE.targetHandY = lm[9].y;
+
+                if (isFist) {
+                    STATE.fistFrames++;
+                    if (STATE.fistFrames > 5 && !STATE.isFist) {
+                        STATE.isFist = true;
+                        if (STATE.phase === 'IDLE') selectCard(STATE.handX * window.innerWidth, STATE.handY * window.innerHeight);
+                        else if (STATE.phase === 'SPREAD_VIEW') resetSpread();
+                    }
+                } else {
+                    if (STATE.isFist && STATE.phase === 'SHOW') dismiss();
+                    STATE.fistFrames = 0; STATE.isFist = false;
+                }
+            } else {
+                STATE.isHandVisible = false;
+            }
+        });
+
+        // 启动摄像头
+        async function startCam() {
+            if (camStarted) return;
+            const v = document.getElementById('input-video');
+            const cam = new Camera(v, { onFrame: async () => { await hands.send({ image: v }); }, width: 320, height: 240 });
+            await cam.start(); camStarted = true;
+        }
+
+        // 启动流程
+        initDeck();
+        // 找到历史记录的容器
+        const historyBox = document.getElementById('history-box');
+
+        // 当鼠标进入右上角历史记录区域时
+        historyBox.onmouseenter = () => {
+            STATE.isHoveringUI = true;
+            STATE.velocity = 0; // 同时也让卡片立即停止滑动，不再有惯性
+        };
+
+        // 当鼠标离开该区域时
+        historyBox.onmouseleave = () => {
+            STATE.isHoveringUI = false;
+        };
+        const clock = new THREE.Clock();
+
+        function animate() {
+            requestAnimationFrame(animate);
+            const elapsed = clock.getElapsedTime();
+
+            // 在高频渲染循环中平滑更新圆圈位置
+            if (STATE.mode === 'HAND') {
+                if (STATE.isHandVisible) {
+                    cursor.style.display = 'block';
+                    // 插值系数 0.2 兼顾灵敏度与流畅度
+                    STATE.handX += (STATE.targetHandX - STATE.handX) * 0.25;
+                    STATE.handY += (STATE.targetHandY - STATE.handY) * 0.25;
+
+                    cursor.style.left = STATE.handX * 100 + '%';
+                    cursor.style.top = STATE.handY * 100 + '%';
+                    cursor.className = STATE.isFist ? 'fist' : '';
+                } else {
+                    cursor.style.display = 'none';
+                }
+            }
+
+            update(elapsed);
+            composer.render();
+        }
+
+        animate();
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight); composer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+
+</html>
