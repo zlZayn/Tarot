@@ -1,6 +1,10 @@
 # Ethereal Tarot 🔮
 
-![虚幻塔罗牌](塔罗牌重复.png)
+<div style="width: 260px; margin: 15px 0; border-radius: 8px; overflow: hidden; box-shadow: 0 3px 8px rgba(139, 69, 19, 0.15);">
+  <a href="https://github.com/zlZayn/Tarot" target="_blank">
+    <img src="塔罗牌重复.png" alt="虚幻塔罗牌" style="width: 100%; height: auto; display: block; cursor: pointer;">
+  </a>
+</div>
 
 这是一个基于 WebGL (Three.js) 的 3D 塔罗牌应用程序，支持鼠标交互与摄像头手势控制。
 
@@ -47,8 +51,6 @@ Ethereal Tarot/
 * **手势模式 (需开启摄像头，点击右下角 "Camera Off" 切换模式)**：
     * **张掌**：移动光标浏览。
     * **握拳**：选中/确认。
-
-
 
 ## 🛠️ 自定义设置 (Customization)
 
