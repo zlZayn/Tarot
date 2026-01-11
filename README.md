@@ -33,6 +33,8 @@ Ethereal Tarot/
 
 * 电脑上必须安装 **Python** (用于运行本地服务器)。
 
+> 或者：VS Code + Live Server（核心目的都是启动本地 HTTP 服务，规避图片跨域限制）
+
 ### 启动步骤
 
 1. 下载本项目全部文件。
