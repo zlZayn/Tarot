@@ -15,8 +15,8 @@
 ## 分层
 - `src/index.html`：HTML 结构 + CDN 脚本 + 入口（不含样式与业务脚本）
 - `src/main.ts`：入口，导入样式与 legacy
-- `src/legacy/app.ts`：原内联脚本整体搬运区（`@ts-nocheck`），与原文差异只有三处（见文件头注释）
-- `src/config/` `src/data/` `src/i18n/` `src/services/` `src/types/` `src/styles/`：配置 / 数据 / 文案 / 服务 / 类型 / 样式
+- `src/legacy/app.ts`：原内联脚本整体搬运区（已类型化，无 `@ts-nocheck`），与原文差异见文件头注释
+- `src/config/` `src/data/` `src/i18n/` `src/services/` `src/types/` `src/styles/`：配置 / 数据 / 文案 / 服务 / 类型（含 `types/globals.d.ts` MediaPipe 全局声明）/ 样式
 - `public/textures/`：运行时图片（cards/ 0-21.jpg，backs/ bm*.jpg|png）
 - `server/serve.py`：本地启动器
 - `tests/`：资源校验 + 交互 E2E

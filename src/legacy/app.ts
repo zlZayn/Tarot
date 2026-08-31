@@ -1,8 +1,9 @@
-// 原 src/index.html 内联 <script type="module"> 的整体搬运区（第一版不拆分、不重写）。
-// 改动点（仅此三处，其余均为原样搬运）：
+// 原 src/index.html 内联 <script type="module"> 的整体搬运区（不拆分、不重写）。
+// 改动点（仅此四处，其余均为原样搬运）：
 //   1. three 及插件改为从 npm 包解析（版本仍为 0.160.0，与原 CDN 完全一致）
 //   2. 数据/文案/资源配置抽到 src/data、src/i18n、src/config/assets.ts
 //   3. 新增抽牌记录保存（src/services/records.ts），仅在 3 张抽牌完成时写入
+//   4. 类型化（2026-09-01 移除 @ts-nocheck）：显式类型/受控断言，运行时语义不变
 import * as THREE from 'three';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
