@@ -8,6 +8,7 @@ dependencies = []
 [dependency-groups]
 dev = [
     "playwright>=1.60.0",
+    "rich>=13.0.0",
 ]
 
 [tool.uv]

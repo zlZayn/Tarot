@@ -15,5 +15,12 @@ Thumbs.db
 # 日志
 *.log
 npm-debug.log*
+
+# Python
+__pycache__/
+*.pyc
 # 测试产物
 tests/artifacts/
+
+# 启动器构建元数据（构建产物性质）
+.ethereal-meta.json
