@@ -7,29 +7,30 @@
 </div>
 
 这是一个基于 WebGL (Three.js) 的 3D 塔罗牌应用程序，支持鼠标交互与摄像头手势控制。
+每次抽牌完成会自动保存到浏览器本地（3 张牌与正逆位），下次打开随时回顾。
 
 ## 📂 目录结构 (Directory Structure)
 
-为了确保程序正常运行，请保持文件结构如下所示。**请将所有素材放置在一个文件夹内，并确保 `dist` 文件夹存在。**
+为了确保程序正常运行，请保持文件结构完整，**不要移动、删除或重命名文件与素材**。
 
 ```text
 Ethereal Tarot/
 ├── Click Me.bat           # 🟢 启动脚本 (Windows)
 ├── server/serve.py        # 本地服务器（被 Click Me.bat 调用，端口占用自动顺延）
-├── dist/                  # 📁 网页程序本体 (npm run build 生成)
+├── dist/                  # 网页程序本体 (npm run build 生成)
 │   ├── index.html         # 主程序入口
 │   └── textures/          # 素材文件夹
 │       ├── backs/         # 牌背图片 (bm.jpg, bm2.png, bm3.png, bm4.png)
 │       └── cards/         # 牌面图片 (0.jpg 愚者 ~ 21.jpg 世界，共 22 张)
-└── src/                   # 📁 源码文件夹（开发者用）
+└── src/                   # 源码文件夹（开发者用）
     ├── index.html         # 页面结构
-    ├── config/assets.ts   # 图片路径配置（改图片路径在这里）
+    ├── config/assets.ts   # 图片路径配置（改图片路径改这里）
     └── ...                # 样式 / 逻辑 / 牌数据 / 多语言模块
 ```
 
-> 朋友分享版 = `dist/` + `Click Me.bat` + `server/serve.py`，只需这三部分。
+> 分享给朋友只需这三部分：`dist/` + `Click Me.bat` + `server/serve.py`。
 
-## 🚀 如何使用 (How to Use)
+## 🪄 如何使用 (How to Use)
 
 本项目专为 Windows 环境设计，利用 Python 快速启动本地服务。
 
@@ -41,7 +42,7 @@ Ethereal Tarot/
 
 ### 启动步骤
 
-1. 下载本项目全部文件。（源码包不含 `dist/`，需先运行 `Build.bat` 或 `npm run build` 生成）
+1. 下载本项目全部文件（源码包不含 `dist/`，需先运行 `Build.bat` 或 `npm run build` 生成）。
 2. 直接双击根目录下的 **`Click Me.bat`** 文件。
 3. 脚本会自动启动服务器，并调用默认浏览器打开应用 (端口被占用时会自动顺延)。
 
