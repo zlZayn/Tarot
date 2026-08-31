@@ -1,0 +1,25 @@
+// UI 文案（中文），原样搬运自原 index.html 的 UI_TEXT.cn，未改写。
+export const uiTextZh = {
+  logo: "虚幻卡罗牌",
+  camOff: "摄像头已关",
+  camOn: "切换至鼠标",
+  shuffle: "洗牌",
+  langLabel: "语言：中",
+  guideMouse: "拖拽以滚动 • 点击以选择",
+  guideHand: "手掌：滚动 • 握拳：选择",
+  clickTip: "点击以取消显示",
+  clickTipHand: "张开手掌以取消显示",
+  spreadTip: "点击以重置牌组",
+  spreadTipHand: "握拳以重置牌组",
+  spreadDesc: "过去 • 现在 • 未来",
+  reviewDesc: "回顾环节",
+  reviewTip: "点击以取消显示",
+  rev: "逆位",
+  upr: "正位",
+  revShort: "逆",
+  uprShort: "正",
+  loading: "召唤阿尔卡纳中",
+  historyTitle: "占卜环节",
+  posNames: ["过去", "现在", "未来"],
+  defaultArcana: "阿尔卡纳"
+};

@@ -1,0 +1,396 @@
+/* 样式模块：全局样式与界面布局 */
+:root {
+    --c-gold: #D4AF37;
+    --c-gold-light: #F9EDC3;
+    --c-bg: #050505;
+}
+
+body {
+    margin: 0;
+    overflow: hidden;
+    background-color: var(--c-bg);
+    /* 默认为英文版字体设置 */
+    font-family: "Cormorant Garamond", serif;
+    color: #eee;
+    user-select: none;
+    transition: font-family 0.3s ease;
+}
+
+/* 中文模式字体覆盖 */
+body.lang-cn {
+    font-family: "Cormorant Garamond", "Noto Serif SC", serif;
+}
+
+#ui-layer {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 30px;
+    background: radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.4) 100%);
+}
+
+/* 顶部栏样式 */
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.logo {
+    /* EN Font */
+    font-family: 'Pirata One', cursive;
+    font-size: 2.5rem;
+    color: var(--c-gold);
+    background: linear-gradient(to bottom, #fdf5e6 0%, #D4AF37 40%, #4a360d 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: 2px;
+    font-weight: 400;
+    filter: drop-shadow(2px 2px 0px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 10px rgba(212, 175, 55, 0.5));
+    pointer-events: auto;
+    animation: occult-pulse 5s ease-in-out infinite alternate;
+}
+
+/* CN Font override for Logo */
+body.lang-cn .logo {
+    font-family: 'Long Cang', cursive;
+}
+
+@keyframes occult-pulse {
+    0% {
+        transform: scale(1);
+        filter: brightness(1) drop-shadow(0 0 5px var(--c-gold));
+    }
+
+    100% {
+        transform: scale(1.01);
+        filter: brightness(1.2) drop-shadow(0 0 15px var(--c-gold));
+    }
+}
+
+/* 控件样式 */
+.controls {
+    position: absolute;
+    right: 40px;
+    bottom: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: auto;
+    z-index: 100;
+}
+
+.btn {
+    font-family: 'Pirata One', cursive;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    padding: 8px 14px;
+    width: 220px;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    color: var(--c-gold);
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: 0.3s;
+    text-transform: none;
+    backdrop-filter: blur(5px);
+    text-align: center;
+}
+
+body.lang-cn .btn {
+    font-family: 'Pirata One', 'Noto Serif SC', cursive;
+}
+
+.btn:hover,
+.btn.active {
+    background: var(--c-gold);
+    color: #000;
+    border-color: var(--c-gold-light);
+}
+
+@keyframes btn-flash {
+    0% {
+        background: rgba(212, 175, 55, 0.8);
+        border-color: #fff;
+        color: #fff;
+    }
+
+    100% {
+        background: rgba(212, 175, 55, 0.2);
+        border-color: var(--c-gold);
+        color: #fff;
+    }
+}
+
+.btn-flash-active {
+    animation: btn-flash 0.4s ease-out;
+}
+
+/* 历史面板样式 */
+.history {
+    width: 250px;
+    pointer-events: auto;
+    max-height: 260px;
+    overflow-y: auto;
+    padding-right: 10px;
+    -webkit-mask-image: linear-gradient(to bottom, black 90%, transparent 100%);
+    mask-image: linear-gradient(to bottom, black 90%, transparent 100%);
+}
+
+.h-group {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 15px;
+    backdrop-filter: blur(8px);
+    transition: all 0.4s ease;
+    opacity: 1;
+    /* 初始完全可见 */
+}
+
+.h-group:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--c-gold);
+}
+
+/* 只有第一组（本轮）有金色边框和发光 */
+.h-group:first-child {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(212, 175, 55, 0.8);
+    animation: gold-glow 2s ease-in-out infinite alternate;
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+    opacity: 1 !important;
+}
+
+/* 非本轮的历史组：整体初始透明度 */
+.history .h-group:not(:first-child) {
+    opacity: 0.5;
+    /* 初始较暗 */
+    border-color: rgba(212, 175, 55, 0.1);
+}
+
+/* 非本轮的卡片缩略图：初始变暗（对标左下角） */
+.history .h-group:not(:first-child) .h-thumb {
+    filter: brightness(0.4) saturate(0.8);
+    transition: filter 0.4s ease;
+    /* 图片亮度的过渡 */
+    opacity: 0.7;
+}
+
+/* --- 重点：悬停过渡设置 --- */
+
+/* 鼠标悬停时：整体透明度恢复 */
+.history .h-group:not(:first-child):hover {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(212, 175, 55, 0.4);
+}
+
+/* 鼠标悬停时：卡片缩略图亮度平滑恢复 */
+.history .h-group:not(:first-child):hover .h-thumb {
+    filter: brightness(0.8) saturate(1);
+    /* 恢复到接近原色但稍暗，保持高级感 */
+    opacity: 1;
+}
+
+@keyframes gold-glow {
+    0% {
+        border-color: rgba(212, 175, 55, 0.4);
+        box-shadow: 0 0 5px rgba(212, 175, 55, 0.05);
+    }
+
+    100% {
+        border-color: rgba(212, 175, 55, 1);
+        box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+    }
+}
+
+.h-group:first-child .h-group-title {
+    color: rgba(212, 175, 55, 1);
+    border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.h-group-title {
+    font-family: "Cinzel", "Noto Serif SC", serif;
+    font-size: 0.6rem;
+    color: rgba(212, 175, 55, 0.6);
+    margin-bottom: 8px;
+    text-align: left;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+    padding-bottom: 4px;
+}
+
+.h-item {
+    font-family: 'Cormorant Garamond', 'Noto Serif SC', serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #ccc;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.h-item span {
+    color: var(--c-gold);
+    font-weight: 700;
+}
+
+.h-thumb {
+    width: 20px;
+    height: 34px;
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    border-radius: 2px;
+    background-size: cover;
+    background-position: center;
+    flex-shrink: 0;
+}
+
+.history::-webkit-scrollbar {
+    width: 0;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateX(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* 结果展示样式 */
+#result-area {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    width: 100%;
+    opacity: 0;
+    transition: opacity 0.5s;
+    pointer-events: none;
+    mix-blend-mode: screen;
+    z-index: 20;
+}
+
+.card-name {
+    font-family: "Cinzel", serif;
+    font-size: 4rem;
+    color: var(--c-gold-light);
+    margin: 0;
+    text-shadow: 0 0 30px rgba(212, 175, 55, 0.8);
+    letter-spacing: 5px;
+}
+
+body.lang-cn .card-name {
+    font-family: "Ma Shan Zheng", "Cinzel", serif;
+}
+
+.card-desc {
+    font-family: 'Cormorant Garamond', 'Noto Serif SC', serif;
+    font-size: 1.6rem;
+    color: #ddd;
+    margin-top: 10px;
+    font-style: italic;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 4px #000;
+}
+
+.card-desc strong {
+    color: var(--c-gold);
+    font-family: "Cinzel", "Noto Serif SC", serif;
+    font-style: normal;
+    font-size: 1rem;
+    margin-right: 10px;
+    border: 1px solid rgba(212, 175, 55, 0.5);
+    padding: 2px 8px;
+}
+
+.guide {
+    font-family: "Cinzel", "Noto Serif SC", serif;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 0.8rem;
+    letter-spacing: 3px;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
+
+/* 加载器样式 */
+#loader {
+    position: fixed;
+    inset: 0;
+    background: #000;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 1s;
+}
+
+.load-text {
+    font-family: 'Pirata One', 'Ma Shan Zheng', cursive;
+    margin-top: 15px;
+    color: var(--c-gold);
+    letter-spacing: 5px;
+    font-size: 1.2rem;
+}
+
+/* 手势光标样式 */
+#cursor {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    border: 2px solid rgba(212, 175, 55, 0.6);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 50;
+    transition: border-color 0.2s;
+    /* 移除了 transform 的过快过渡 */
+    display: none;
+    will-change: left, top;
+}
+
+#cursor::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 6px;
+    height: 6px;
+    background: var(--c-gold);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 10px var(--c-gold);
+}
+
+#cursor.fist {
+    transform: translate(-50%, -50%) scale(0.5);
+    background: rgba(212, 175, 55, 0.3);
+    border-color: #fff;
+}
+
+#input-video {
+    display: none;
+}
+
+/* 加载器旋转动画 */
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}

@@ -1,0 +1,18 @@
+# 依赖
+node_modules/
+
+# 构建产物
+dist/
+
+# 编辑器 / 系统
+.vscode/
+.idea/
+*.swp
+Thumbs.db
+.DS_Store
+
+# 日志
+*.log
+npm-debug.log*
+# 测试产物
+tests/artifacts/
