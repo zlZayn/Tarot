@@ -6,7 +6,7 @@
 
 ## 变更影响路由
 - 换牌背：文件放 `backs/`，改 `src/config/assets.ts` 的 `BACK_URL`，重建 dist
-- 新增/删除/改名图片 → 必须同步更新引用方，并跑 `python tests/run_checks.py` 校验清单
+- 新增/删除/改名图片 → 必须同步更新引用方，并跑 `uv run python tests/run_checks.py` 校验清单
 
 ## 参考
 - 规则 → [AGENTS.md](AGENTS.md)、根 [AGENTS.md](../AGENTS.md)

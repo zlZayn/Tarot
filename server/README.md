@@ -7,7 +7,7 @@
   - 被 `Click Me.bat` 调用（朋友端与开发端共用）
 
 ## 变更影响路由
-- 改 serve.py 的行为 → 同步更新本 README 与根 README 的"普通用户运行"段
+- 改 serve.py 的行为 → 同步更新本 README 与根 README 的"快速开始"节
 - 完整 Rich 版启动器实施时替换本文件所在模块，见根 AGENTS.md 待办
 
 ## 参考

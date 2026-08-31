@@ -13,7 +13,7 @@
 - Python 工具链：uv 管理（`pyproject.toml` + `uv.lock` + `.python-version` 3.12.10）；运行时零依赖，测试用 dev 组 playwright
 
 ## 分层
-- `src/index.html`：HTML 结构 + CDN 脚本 + 入口（不再含样式与业务脚本）
+- `src/index.html`：HTML 结构 + CDN 脚本 + 入口（不含样式与业务脚本）
 - `src/main.ts`：入口，导入样式与 legacy
 - `src/legacy/app.ts`：原内联脚本整体搬运区（`@ts-nocheck`），与原文差异只有三处（见文件头注释）
 - `src/config/` `src/data/` `src/i18n/` `src/services/` `src/types/` `src/styles/`：配置 / 数据 / 文案 / 服务 / 类型 / 样式

@@ -42,14 +42,7 @@ npm run build      # 构建发布版到 dist/
 
 ## 测试（可选）
 
-```bash
-uv sync                             # 安装测试环境（playwright）
-uv run playwright install chromium  # 首次需下载浏览器
-uv run python tests/run_checks.py http://localhost:8000   # 资源完整性
-uv run python tests/run_e2e.py      http://localhost:8000 # 交互 E2E
-```
-
-详细见 [tests/README.md](tests/README.md)。
+资源校验与交互 E2E 脚本见 [tests/README.md](tests/README.md)；命令速查见 [AGENTS.md](AGENTS.md)。
 
 ## 目录结构
 

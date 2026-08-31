@@ -4,7 +4,7 @@
 | 脚本 | 覆盖 | 运行条件 |
 |------|------|----------|
 | `run_checks.py` | 资源完整性：public↔dist 清单对比 + HTTP 全 200 | 有服务器更佳；无服务器也跑清单部分 |
-| `run_e2e.py` | 交互 E2E：加载、UI 文案、连抽 3 张、展开/回顾视图、localStorage 断言、截图 | 服务器运行中 + `pip install playwright && playwright install chromium` |
+| `run_e2e.py` | 交互 E2E：加载、UI 文案、连抽 3 张、展开/回顾视图、localStorage 断言、截图 | 服务器运行中 + uv 环境（见下方用法） |
 
 ## 用法（uv 管理测试环境）
 
