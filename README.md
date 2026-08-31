@@ -2,7 +2,7 @@
 
 <div style="width: 260px; margin: 15px 0; border-radius: 8px; overflow: hidden; box-shadow: 0 3px 8px rgba(139, 69, 19, 0.15);">
   <a href="https://github.com/zlZayn/Tarot" target="_blank">
-    <img src="docs/assets/preview.png" alt="虚幻塔罗牌" style="width: 100%; height: auto; display: block; cursor: pointer;">
+    <img src="docs/assets/preview.jpg" alt="虚幻塔罗牌" style="width: 100%; height: auto; display: block; cursor: pointer;">
   </a>
 </div>
 
