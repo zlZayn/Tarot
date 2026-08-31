@@ -34,3 +34,4 @@
 - 编辑器原子保存会在 src/ 生成 `*.tmpdir` 临时目录，chokidar Windows 上 EBUSY 崩溃；vite.config.ts 已忽略，勿扩监视范围
 - Windows 控制台 GBK 打印 `•` 等 Unicode 会崩；Python 脚本统一 reconfigure UTF-8
 - Vite publicDir 会把 public/ 里的维护双件拷进 dist，且 closeBundle 钩子早于拷贝执行（删了会被拷回）；必须用构建后置脚本 scripts/clean-dist.mjs
+- .bat 文件禁止中文/非 ASCII：cmd 按 GBK 解析 UTF-8 中文注释会把括号块拆碎（if/exit 失效、乱码命令）；bat 一律纯 ASCII，中文说明写 README
