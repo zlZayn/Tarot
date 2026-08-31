@@ -3,8 +3,9 @@
 ## 文档地图
 - 架构设计 → [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
 - 模块手册 → [src/README.md](src/README.md)
+- 启动器（Rich）→ [core/README.md](core/README.md) · [ui/README.md](ui/README.md)
+- 启动器（零依赖）→ [server/README.md](server/README.md)
 - 测试说明 → [tests/README.md](tests/README.md)
-- 启动器说明 → [server/README.md](server/README.md)
 - 决策记录 → [.agents/notes/](.agents/notes/)
 
 ## 全局规则
@@ -16,7 +17,8 @@
 ## 常用命令
 - 前端：`npm run dev` · `npm run build` · `npm run typecheck`
 - Python 测试环境：`uv sync`（变更 py 依赖后 `uv lock && uv sync`）
-- 运行：`python server/serve.py --dir dist --open`
+- 开发者启动器：`uv run python launcher.py`（`--check-only` 只做完整性检查；`--force` 强制重建）
+- 运行（轻量）：`python server/serve.py --dir dist --open`
 - 测试：`uv run python tests/run_checks.py http://localhost:8000` · `uv run python tests/run_e2e.py http://localhost:8000`（首次 `uv run playwright install chromium`）
 
 ## 验证快照（2026-09-01）
@@ -24,10 +26,10 @@
 - build: Vite 5.4.21 通过；dist = 26 textures + index.html + 2 assets，无文档文件（clean-dist 生效）
 - run_checks: 26/26 OK（含 dist 根禁止文件防回归），HTTP 全 200
 - run_e2e: dist + dev 双端通过（抽 3 张 + localStorage 断言 + 截图）；uv 环境（.venv + playwright 1.62.0）复跑通过
+- launcher: 冒烟通过（首次判定重建 / build 后免重建 / 源码变更触发 / 8000 占用顺延 8001 / Q 退出零残留）
 
 ## 待办
-- [ ] 完整 Rich 启动器：独立分支 + PR，按 core/ui 分层实施（core: integrity/server/builder/config；ui: dashboard/prompts/theme/spinners），完成后同步 server 双件、根 README、决策记录状态，见 [2026-09-01-launcher](.agents/notes/2026-09-01-launcher.md)
-- [ ] Python 记录后端：已决定不实施（见 [2026-09-01-records-localstorage](.agents/notes/2026-09-01-records-localstorage.md) 备选标注）
+- 无当前待办（决策/否决历史见 [.agents/notes/](.agents/notes/)；迁移、类型化、Rich 启动器均已完成）
 
 ## 活跃坑
 - 编辑器原子保存会在 src/ 生成 `*.tmpdir` 临时目录，chokidar Windows 上 EBUSY 崩溃；vite.config.ts 已忽略，勿扩监视范围

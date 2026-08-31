@@ -17,6 +17,8 @@
 Ethereal Tarot/
 ├── Click Me.bat           # 🟢 启动脚本 (Windows)
 ├── server/serve.py        # 本地服务器（被 Click Me.bat 调用，端口占用自动顺延）
+├── launcher.py            # 开发者启动器（Rich 面板 + 构建过期检测）
+├── core/ ui/              # 启动器核心逻辑层 / 渲染层（被 launcher.py 使用）
 ├── dist/                  # 网页程序本体 (npm run build 生成)
 │   ├── index.html         # 主程序入口
 │   └── textures/          # 素材文件夹
@@ -85,6 +87,7 @@ const BACK_URL = "./textures/backs/my_back.jpg";
 * 前置：Node.js ≥ 18 与 Python。
 * `npm install` 安装依赖，`npm run dev` 启动开发服务器 (`http://localhost:5173`，改代码自动刷新)。
 * `npm run build` 构建发布版到 `dist/`；`npm run typecheck` 做类型检查。
+* 开发者启动器：`uv run python launcher.py`（构建过期自动提示，交互面板运行）。
 * 测试与维护文档见 [tests/README.md](tests/README.md) 与 [AGENTS.md](AGENTS.md)。
 
 ## 📖 文档

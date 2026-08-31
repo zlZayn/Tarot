@@ -9,7 +9,8 @@
 - 手部识别：MediaPipe CDN 经典脚本保留（全局 `Hands` / `Camera`），`three/addons` 经 npm 解析
 - 资源：全部在 `public/textures/`，路径唯一权威 `src/config/assets.ts`（`IMG_URL` / `BACK_URL`）
 - 记录：`localStorage`（key `ethereal-tarot:records`，`schemaVersion: 1`），无后端
-- 启动：`server/serve.py` 纯标准库（端口顺延、同进程服务零残留、dist 过期提示）
+- 启动（朋友/轻量）：`server/serve.py` 纯标准库（端口顺延、同进程服务零残留、dist 过期提示）
+- 启动（开发者 Rich）：`launcher.py` + `core/`（零 Rich 依赖：config/integrity/builder/server）+ `ui/`（theme/spinners/prompts/dashboard）；构建元数据 `.ethereal-meta.json` 放项目根（dist 会被 emptyOutDir 清空）
 - Python 工具链：uv 管理（`pyproject.toml` + `uv.lock` + `.python-version` 3.12.10）；运行时零依赖，测试用 dev 组 playwright
 
 ## 分层
@@ -18,7 +19,8 @@
 - `src/legacy/app.ts`：原内联脚本整体搬运区（已类型化，无 `@ts-nocheck`），与原文差异见文件头注释
 - `src/config/` `src/data/` `src/i18n/` `src/services/` `src/types/` `src/styles/`：配置 / 数据 / 文案 / 服务 / 类型（含 `types/globals.d.ts` MediaPipe 全局声明）/ 样式
 - `public/textures/`：运行时图片（cards/ 0-21.jpg，backs/ bm*.jpg|png）
-- `server/serve.py`：本地启动器
+- `server/serve.py`：本地启动器（朋友端零依赖）
+- `launcher.py` + `core/` + `ui/`：Rich 启动器（开发者；校验/构建/运行面板）
 - `tests/`：资源校验 + 交互 E2E
 - `docs/assets/`：README 预览图（1.4MB JPG，不进入 dist）
 
