@@ -1,5 +1,5 @@
 @echo off
-:: 本地开发脚本：启动 Vite 开发服务器（需要 Node.js），改代码自动刷新
+:: Local dev script: starts Vite dev server (requires Node.js), hot reload
 cd /d "%~dp0"
 
 where npm >nul 2>nul

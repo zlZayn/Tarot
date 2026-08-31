@@ -1,5 +1,5 @@
 @echo off
-:: 本地构建脚本：类型检查 + 生成 dist/ 发布目录（需要 Node.js）
+:: Local build script: type-check + build dist/ (requires Node.js)
 cd /d "%~dp0"
 
 where npm >nul 2>nul
@@ -39,6 +39,6 @@ if errorlevel 1 (
 echo.
 echo Build finished. dist/ is ready.
 echo Run Click Me.bat to serve it, then run tests:
-echo   python tests/run_checks.py http://localhost:8000
-echo   python tests/run_e2e.py  http://localhost:8000
+echo   uv run python tests/run_checks.py http://localhost:8000
+echo   uv run python tests/run_e2e.py  http://localhost:8000
 pause

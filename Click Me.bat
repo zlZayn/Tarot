@@ -1,5 +1,5 @@
 @echo off
-:: 给最终用户/朋友的启动脚本（需要 Python；零额外依赖，无需 Node.js）
+:: Launcher for end users / friends: serves dist/ (requires Python only)
 cd /d "%~dp0"
 
 python --version >nul 2>&1
@@ -18,6 +18,6 @@ if not exist "dist\index.html" (
 )
 
 echo Starting Ethereal Tarot...
-:: 启动器：自动探测端口（8000 被占用则顺延）、退出无残留、自动打开浏览器
+:: serve.py picks a free port (8000 -> 8001 ...), exits clean, opens the browser
 python server\serve.py --dir dist --open
 pause
