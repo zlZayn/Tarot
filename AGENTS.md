@@ -21,8 +21,8 @@
 
 ## 验证快照（2026-09-01）
 - typecheck: 0 error
-- build: Vite 5.4.21 通过（dist 26 文件）
-- run_checks: 26/26 OK，HTTP 全 200
+- build: Vite 5.4.21 通过；dist = 26 textures + index.html + 2 assets，无文档文件（clean-dist 生效）
+- run_checks: 26/26 OK（含 dist 根禁止文件防回归），HTTP 全 200
 - run_e2e: dist + dev 双端通过（抽 3 张 + localStorage 断言 + 截图）；uv 环境（.venv + playwright 1.62.0）复跑通过
 
 ## 待办
@@ -33,3 +33,4 @@
 ## 活跃坑
 - 编辑器原子保存会在 src/ 生成 `*.tmpdir` 临时目录，chokidar Windows 上 EBUSY 崩溃；vite.config.ts 已忽略，勿扩监视范围
 - Windows 控制台 GBK 打印 `•` 等 Unicode 会崩；Python 脚本统一 reconfigure UTF-8
+- Vite publicDir 会把 public/ 里的维护双件拷进 dist，且 closeBundle 钩子早于拷贝执行（删了会被拷回）；必须用构建后置脚本 scripts/clean-dist.mjs

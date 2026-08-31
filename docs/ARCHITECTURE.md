@@ -4,7 +4,7 @@
 - 原生 HTML/CSS/JS + Three.js 的 3D 塔罗牌应用，Vite + TypeScript 工程化整理，不引入前端框架。
 
 ## 设计决策（不变，改动需先推翻决策记录）
-- 构建：Vite 5，`root=src`、`base="./"`、`publicDir=../public`、`outDir=../dist`
+- 构建：Vite 5，`root=src`、`base="./"`、`publicDir=../public`、`outDir=../dist`；构建后 `scripts/clean-dist.mjs` 剔除 public 维护双件
 - 依赖：three 固定 `0.160.0`（npm 本地化，与原 CDN import map 同版本、同模块文件）
 - 手部识别：MediaPipe CDN 经典脚本保留（全局 `Hands` / `Camera`），`three/addons` 经 npm 解析
 - 资源：全部在 `public/textures/`，路径唯一权威 `src/config/assets.ts`（`IMG_URL` / `BACK_URL`）
@@ -31,6 +31,7 @@
 - legacy 区禁止重构、禁止"顺手修 bug"；只允许新增无副作用调用点
 - `IMG_URL` / `BACK_URL` 只在 `assets.ts` 改；改后必须 `npm run build` 重建 dist
 - 文案只在 `data/cards.ts`（牌数据）与 `i18n/`（UI 文案）改，与 legacy 内引用一一对应
-- dist 只由 `npm run build` 生成，手工改动一律会被覆盖
+- dist 只由 `npm run build` 生成，手工改动一律会被覆盖（build 含 clean-dist 后置清理）
+- public 双件不改名放（AGENTS.md 需精确文件名才能被注入）；dist 洁净由 tests/run_checks.py 防回归
 - 换牌背/换牌面图片：文件放 `public/textures/` 对应子目录，不要动 `src/` 里的引用写法
 - 任何改动后跑 `tests/`（P0：run_checks + run_e2e）
