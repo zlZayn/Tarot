@@ -26,9 +26,8 @@
 - run_e2e: dist + dev 双端通过（抽 3 张 + localStorage 断言 + 截图）；uv 环境（.venv + playwright 1.62.0）复跑通过
 
 ## 待办
-- [ ] 完整 Rich 启动器（core/ui 分层 + 哈希校验 + 面板交互），见 [2026-09-01-launcher](.agents/notes/2026-09-01-launcher.md)
-- [ ] 渐进去除 `src/legacy/app.ts` 的 `@ts-nocheck`
-- [ ] 可选：Python 记录后端（先 localStorage，需求出现再上）
+- [ ] 完整 Rich 启动器：独立分支 + PR，按 core/ui 分层实施（core: integrity/server/builder/config；ui: dashboard/prompts/theme/spinners），完成后同步 server 双件、根 README、决策记录状态，见 [2026-09-01-launcher](.agents/notes/2026-09-01-launcher.md)
+- [ ] Python 记录后端：已决定不实施（见 [2026-09-01-records-localstorage](.agents/notes/2026-09-01-records-localstorage.md) 备选标注）
 
 ## 活跃坑
 - 编辑器原子保存会在 src/ 生成 `*.tmpdir` 临时目录，chokidar Windows 上 EBUSY 崩溃；vite.config.ts 已忽略，勿扩监视范围
