@@ -20,7 +20,7 @@
 - `public/textures/`：运行时图片（cards/ 0-21.jpg，backs/ bm*.jpg|png）
 - `server/serve.py`：本地启动器
 - `tests/`：资源校验 + 交互 E2E
-- `docs/assets/`：README 预览图（原 42MB 大图，不进入 dist）
+- `docs/assets/`：README 预览图（1.4MB JPG，不进入 dist）
 
 ## 数据流（不变契约）
 - 页面加载 → `main.ts` → `legacy/app.ts`：加载 22 张牌面纹理 + 牌背 → loader 移除 → 洗牌入场
