@@ -15,17 +15,19 @@
 ```text
 Ethereal Tarot/
 ├── Click Me.bat           # 🟢 启动脚本 (Windows)
-├── server/serve.py        # 本地服务器（双击启动时自动调用，端口占用自动顺延）
-├── dist/                  # 📁 网页程序本体（npm run build 生成；朋友分享版只需要它）
+├── server/serve.py        # 本地服务器（被 Click Me.bat 调用，端口占用自动顺延）
+├── dist/                  # 📁 网页程序本体 (npm run build 生成)
 │   ├── index.html         # 主程序入口
 │   └── textures/          # 素材文件夹
 │       ├── backs/         # 牌背图片 (bm.jpg, bm2.png, bm3.png, bm4.png)
-│       └── cards/         # 牌面图片 (0.jpg 愚者 ~ 21.jpg 世界)
+│       └── cards/         # 牌面图片 (0.jpg 愚者 ~ 21.jpg 世界，共 22 张)
 └── src/                   # 📁 源码文件夹（开发者用）
     ├── index.html         # 页面结构
     ├── config/assets.ts   # 图片路径配置（改图片路径在这里）
     └── ...                # 样式 / 逻辑 / 牌数据 / 多语言模块
 ```
+
+> 朋友分享版 = `dist/` + `Click Me.bat` + `server/serve.py`，只需这三部分。
 
 ## 🚀 如何使用 (How to Use)
 
@@ -36,18 +38,16 @@ Ethereal Tarot/
 * 电脑上必须安装 **Python** (用于运行本地服务器)。
 
 > 或者：VS Code + Live Server（核心目的都是启动本地 HTTP 服务，规避图片跨域限制）
-> 或者：VS Code + Live Server
 
 ### 启动步骤
 
-1. 下载本项目全部文件。
+1. 下载本项目全部文件。（源码包不含 `dist/`，需先运行 `Build.bat` 或 `npm run build` 生成）
 2. 直接双击根目录下的 **`Click Me.bat`** 文件。
-3. 脚本会自动启动服务器，并调用默认浏览器打开应用。（端口被占用时会自动顺延）
+3. 脚本会自动启动服务器，并调用默认浏览器打开应用 (端口被占用时会自动顺延)。
 
-> **注意**：如果不使用脚本，你需要手动在 `dist` 目录下开启一个 HTTP 服务器（如 Live Server），否则图片纹理将无法加载（CORS 跨域限制）。
-> **注意**：如果不使用脚本，你需要手动在目录下开启一个 HTTP 服务器（如 Live Server），否则图片纹理将无法加载（CORS 跨域限制）。外部资源加载可能较慢，有必要时科学上网。
+> **注意**：如果不使用脚本，你需要手动在 `dist` 目录下开启一个 HTTP 服务器（如 Live Server），否则图片纹理将无法加载（CORS 跨域限制）。外部资源加载可能较慢，有必要时科学上网。
 
-## 🎮 操作指南
+## 🖐️ 操作指南
 
 * **鼠标模式**：
     * **拖拽**：左右滑动浏览牌堆。
@@ -82,7 +82,7 @@ const BACK_URL = "./textures/backs/my_back.jpg";
 ## 🧑‍💻 开发者 (Developer)
 
 * 前置：Node.js ≥ 18 与 Python。
-* `npm install` 安装依赖，`npm run dev` 启动开发服务器（http://localhost:5173，改代码自动刷新）。
+* `npm install` 安装依赖，`npm run dev` 启动开发服务器 (http://localhost:5173，改代码自动刷新)。
 * `npm run build` 构建发布版到 `dist/`；`npm run typecheck` 做类型检查。
 * 测试与维护文档见 [tests/README.md](tests/README.md) 与 [AGENTS.md](AGENTS.md)。
 
