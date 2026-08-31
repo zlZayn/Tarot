@@ -1,63 +1,93 @@
-# Ethereal Tarot
+# Ethereal Tarot 🔮
 
-基于 WebGL (Three.js) 的 3D 塔罗牌应用：鼠标与摄像头手势双模式，每次 3 张牌，完成后自动存入浏览器本地（localStorage）。
+<div style="width: 260px; margin: 15px 0; border-radius: 8px; overflow: hidden; box-shadow: 0 3px 8px rgba(139, 69, 19, 0.15);">
+  <a href="https://github.com/zlZayn/Tarot" target="_blank">
+    <img src="docs/assets/preview.png" alt="虚幻塔罗牌" style="width: 100%; height: auto; display: block; cursor: pointer;">
+  </a>
+</div>
 
-预览图：[docs/assets/preview.png](docs/assets/preview.png)
+这是一个基于 WebGL (Three.js) 的 3D 塔罗牌应用程序，支持鼠标交互与摄像头手势控制。
 
-## 快速开始
+## 📂 目录结构 (Directory Structure)
 
-**普通用户 / 朋友（只需要 Python，不需要 Node）**
-
-1. 安装 Python 3（https://www.python.org/downloads/ ）
-2. 双击 `Click Me.bat`
-3. 浏览器自动打开 `http://localhost:8000`（端口被占用时自动顺延）
-
-**开发者（需要 Node.js ≥ 18 + Python）**
-
-```bash
-npm install
-npm run dev        # 开发服务器 http://localhost:5173（改代码自动刷新）
-npm run build      # 构建发布版到 dist/
-```
-
-## 入口文件一览
-
-| 入口 | 用途 | 适用 |
-|---|---|---|
-| `Click Me.bat` | 启动构建产物 dist（检测 Python / dist，端口顺延，自动开浏览器） | 用户 |
-| `Start Dev.bat` | 启动 Vite 开发服务器 | 开发者 |
-| `Build.bat` | 类型检查 + 构建 dist | 开发者 |
-| `server/serve.py` | 本地静态服务（纯标准库，退出零残留），被 Click Me.bat 调用 | 双方 |
-
-## 操作
-
-- **鼠标**：拖拽浏览牌堆，点击抽牌
-- **手势**（右下角 `Camera Off` 切换）：张掌移动光标，握拳选中/确认
-
-## 自定义牌背
-
-1. 新图片放入 `public/textures/backs/`
-2. 修改 `src/config/assets.ts` 的 `BACK_URL`
-3. `npm run build` 重建
-
-## 测试（可选）
-
-资源校验与交互 E2E 脚本见 [tests/README.md](tests/README.md)；命令速查见 [AGENTS.md](AGENTS.md)。
-
-## 目录结构
+为了确保程序正常运行，请保持文件结构如下所示。**请将所有素材放置在一个文件夹内，并确保 `dist` 文件夹存在。**
 
 ```text
-├─ Click Me.bat / Start Dev.bat / Build.bat   # 三个入口
-├─ src/              # 源码：页面结构、样式、逻辑（legacy/ 为原逻辑搬运区）
-├─ public/textures/  # 运行时图片：cards/ 22 张牌面，backs/ 4 张牌背
-├─ server/serve.py   # 本地启动器
-├─ tests/            # 资源校验与 E2E
-├─ docs/             # 架构文档 + 预览图
-└─ dist/             # 构建产物（发布包 = dist + Click Me.bat + server/serve.py）
+Ethereal Tarot/
+├── Click Me.bat           # 🟢 启动脚本 (Windows)
+├── server/serve.py        # 本地服务器（双击启动时自动调用，端口占用自动顺延）
+├── dist/                  # 📁 网页程序本体（npm run build 生成；朋友分享版只需要它）
+│   ├── index.html         # 主程序入口
+│   └── textures/          # 素材文件夹
+│       ├── backs/         # 牌背图片 (bm.jpg, bm2.png, bm3.png, bm4.png)
+│       └── cards/         # 牌面图片 (0.jpg 愚者 ~ 21.jpg 世界)
+└── src/                   # 📁 源码文件夹（开发者用）
+    ├── index.html         # 页面结构
+    ├── config/assets.ts   # 图片路径配置（改图片路径在这里）
+    └── ...                # 样式 / 逻辑 / 牌数据 / 多语言模块
 ```
 
-## 文档
+## 🚀 如何使用 (How to Use)
 
-- 维护索引（规则/命令/待办）→ [AGENTS.md](AGENTS.md)
-- 架构设计 → [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
-- 决策记录 → [.agents/notes/](.agents/notes/)
+本项目专为 Windows 环境设计，利用 Python 快速启动本地服务。
+
+### 前置要求
+
+* 电脑上必须安装 **Python** (用于运行本地服务器)。
+
+> 或者：VS Code + Live Server（核心目的都是启动本地 HTTP 服务，规避图片跨域限制）
+> 或者：VS Code + Live Server
+
+### 启动步骤
+
+1. 下载本项目全部文件。
+2. 直接双击根目录下的 **`Click Me.bat`** 文件。
+3. 脚本会自动启动服务器，并调用默认浏览器打开应用。（端口被占用时会自动顺延）
+
+> **注意**：如果不使用脚本，你需要手动在 `dist` 目录下开启一个 HTTP 服务器（如 Live Server），否则图片纹理将无法加载（CORS 跨域限制）。
+> **注意**：如果不使用脚本，你需要手动在目录下开启一个 HTTP 服务器（如 Live Server），否则图片纹理将无法加载（CORS 跨域限制）。外部资源加载可能较慢，有必要时科学上网。
+
+## 🎮 操作指南
+
+* **鼠标模式**：
+    * **拖拽**：左右滑动浏览牌堆。
+    * **点击**：抽取选中的牌。
+
+
+* **手势模式 (需开启摄像头，点击右下角 "Camera Off" 切换模式)**：
+    * **张掌**：移动光标浏览。
+    * **握拳**：选中/确认。
+
+## 🛠️ 自定义设置 (Customization)
+
+### 更换牌背图案
+
+你可以更改塔罗牌背面的图案（默认为 `bm4.png`）。
+
+1. 将你想要的图片（推荐 .png 或 .jpg）放入 `public/textures/backs/` 文件夹中。
+2. 使用记事本或代码编辑器打开 `src/config/assets.ts`。
+3. 搜索关键词 `BACK_URL` 并修改文件名：
+
+```javascript
+// 修改前
+const BACK_URL = "./textures/backs/bm4.png";
+
+// 修改后 (假设你的新图片叫 my_back.jpg)
+const BACK_URL = "./textures/backs/my_back.jpg";
+```
+
+4. 运行 `npm run build` 构建。
+5. 刷新网页即可生效新牌背。
+
+## 🧑‍💻 开发者 (Developer)
+
+* 前置：Node.js ≥ 18 与 Python。
+* `npm install` 安装依赖，`npm run dev` 启动开发服务器（http://localhost:5173，改代码自动刷新）。
+* `npm run build` 构建发布版到 `dist/`；`npm run typecheck` 做类型检查。
+* 测试与维护文档见 [tests/README.md](tests/README.md) 与 [AGENTS.md](AGENTS.md)。
+
+## 📖 文档
+
+* 维护索引（规则 / 命令 / 待办）→ [AGENTS.md](AGENTS.md)
+* 架构设计 → [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
+* 决策记录 → [.agents/notes/](.agents/notes/)
