@@ -83,7 +83,7 @@ const BACK_URL = "./textures/backs/my_back.jpg";
 ## 🧑‍💻 开发者 (Developer)
 
 * 前置：Node.js ≥ 18 与 Python。
-* `npm install` 安装依赖，`npm run dev` 启动开发服务器 (http://localhost:5173，改代码自动刷新)。
+* `npm install` 安装依赖，`npm run dev` 启动开发服务器 (`http://localhost:5173`，改代码自动刷新)。
 * `npm run build` 构建发布版到 `dist/`；`npm run typecheck` 做类型检查。
 * 测试与维护文档见 [tests/README.md](tests/README.md) 与 [AGENTS.md](AGENTS.md)。
 
