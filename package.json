@@ -6,7 +6,7 @@
   "description": "3D 塔罗牌应用（Three.js + MediaPipe 手势），Vite + TypeScript 工程化整理版。",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && node scripts/clean-dist.mjs",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit"
   },
