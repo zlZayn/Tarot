@@ -25,7 +25,7 @@ function makeId(): string {
 }
 
 export function saveDrawSession(
-  record: Omit<DrawSessionRecord, "id" | "time">
+  record: Omit<DrawSessionRecord, "id" | "time" | "schemaVersion">
 ): DrawSessionRecord {
   const full: DrawSessionRecord = {
     ...record,

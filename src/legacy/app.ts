@@ -1,4 +1,3 @@
-// @ts-nocheck
 // 原 src/index.html 内联 <script type="module"> 的整体搬运区（第一版不拆分、不重写）。
 // 改动点（仅此三处，其余均为原样搬运）：
 //   1. three 及插件改为从 npm 包解析（版本仍为 0.160.0，与原 CDN 完全一致）
@@ -15,7 +14,7 @@ import { IMG_URL, BACK_URL } from '../config/assets';
 import { saveDrawSession } from '../services/records';
 
 // 当前语言设置
-let curLang = 'en';
+let curLang: 'en' | 'cn' = 'en';
 
 // --- 三维场景与渲染 ---
 // 初始化 scene、camera、renderer 与灯光
@@ -57,7 +56,24 @@ scene.add(new THREE.PointLight(0x4466ff, 3.0, 25).translateY(0).translateX(-10).
 scene.add(new THREE.PointLight(0x4466ff, 3.0, 25).translateY(0).translateX(10).translateZ(-5));
 
 // --- 全局状态对象 ---
-const STATE = {
+interface CardState { id: number; isRev: boolean; }
+interface AppState {
+    mode: 'MOUSE' | 'HAND';
+    cards: THREE.Mesh[];
+    data: CardState[];
+    activeCards: number[];
+    discardPile: THREE.Mesh[];
+    offset: number; velocity: number;
+    phase: string;
+    selected: THREE.Mesh | null;
+    handX: number; handY: number; targetHandX: number; targetHandY: number; isHandVisible: boolean;
+    isFist: boolean; fistFrames: number;
+    isDrag: boolean; lastX: number; startX: number; startY: number;
+    mousePos: THREE.Vector2;
+    raycaster: THREE.Raycaster;
+    isHoveringUI: boolean;
+}
+const STATE: AppState = {
     mode: 'MOUSE',
     cards: [], data: [], activeCards: [], discardPile: [],
     offset: 0, velocity: 0,
@@ -102,7 +118,7 @@ function updateUIText() {
     const guide = document.getElementById('guide-text');
     guide.innerText = STATE.mode === 'MOUSE' ? T.guideMouse : T.guideHand;
 
-    const loadText = document.querySelector('.load-text');
+    const loadText = document.querySelector<HTMLElement>('.load-text');
     if (loadText) loadText.innerText = T.loading;
 
     // 如果当前正在展示卡牌结果，更新结果文字
@@ -148,7 +164,7 @@ langBtn.onclick = () => {
 
     // 2. Full Reset Logic ("Like just opened")
     // A. Reset UI elements
-    document.getElementById('result-area').style.opacity = 0;
+    document.getElementById('result-area').style.opacity = "0";
     const hBox = document.getElementById('history-box');
 
     // B. Clean up 3D clones in history before clearing DOM
@@ -246,7 +262,7 @@ function initDeck() {
         loaded++;
         if (loaded === 22) {
             const l = document.getElementById('loader');
-            if (l) { l.style.opacity = 0; setTimeout(() => l.remove(), 1000); }
+            if (l) { l.style.opacity = "0"; setTimeout(() => l.remove(), 1000); }
             performShuffleAndSpin();
         }
     }
@@ -394,7 +410,7 @@ function selectCard(clientX, clientY) {
 // --- 收牌逻辑 ---
 function dismiss() {
     if (!STATE.selected || STATE.phase === 'FLYING') return;
-    document.getElementById('result-area').style.opacity = 0;
+    document.getElementById('result-area').style.opacity = "0";
     const m = STATE.selected;
     STATE.discardPile.push(m);
     STATE.activeCards = STATE.activeCards.filter(id => id !== m.userData.id);
@@ -476,7 +492,7 @@ function flyToSpreadView() {
             document.getElementById('r-name').innerText = names.join("  •  ");
             document.getElementById('r-desc').innerHTML = T.spreadDesc;
             document.getElementById('click-tip').innerText = STATE.mode === 'HAND' ? T.spreadTipHand : T.spreadTip;
-            document.getElementById('result-area').style.opacity = 1;
+            document.getElementById('result-area').style.opacity = "1";
         }
     }
     anim();
@@ -486,7 +502,7 @@ function flyToSpreadView() {
 function resetSpread() {
     if (STATE.phase !== 'SPREAD_VIEW') return;
     STATE.phase = 'FLYING';
-    document.getElementById('result-area').style.opacity = 0;
+    document.getElementById('result-area').style.opacity = "0";
 
     // 获取当前历史组，以便我们将牌替换为副本
     const hBox = document.getElementById('history-box');
@@ -521,7 +537,7 @@ function showUI(dataState) {
 
     document.getElementById('r-name').innerText = d.n;
     document.getElementById('r-desc').innerHTML = `<strong>${isRev ? T.rev : T.upr}</strong> ${isRev ? d.r : d.u}`;
-    document.getElementById('result-area').style.opacity = 1;
+    document.getElementById('result-area').style.opacity = "1";
 
     const hBox = document.getElementById('history-box');
     const currentCount = STATE.discardPile.length;
@@ -615,7 +631,7 @@ function showReviewSpread(targetGroup) {
             document.getElementById('r-name').innerText = names.join("  •  ");
             document.getElementById('r-desc').innerHTML = T.reviewDesc;
             document.getElementById('click-tip').innerText = T.reviewTip;
-            document.getElementById('result-area').style.opacity = 1;
+            document.getElementById('result-area').style.opacity = "1";
         }
     }
     anim();
@@ -655,7 +671,8 @@ window.addEventListener('mousemove', e => {
     }
 });
 window.addEventListener('click', (e) => {
-    if (e.target.closest('.btn') || e.target.closest('.h-group')) return;
+    const evTarget = e.target as Element;
+    if (evTarget.closest('.btn') || evTarget.closest('.h-group')) return;
     if (STATE.mode === 'MOUSE') {
         const moveDist = Math.hypot(e.clientX - STATE.startX, e.clientY - STATE.startY);
         if (moveDist < 10) {
@@ -663,7 +680,7 @@ window.addEventListener('click', (e) => {
             else if (STATE.phase === 'SHOW') dismiss();
             else if (STATE.phase === 'REVIEW_VIEW') {
                 // 简短：关闭回顾视图并将克隆飞回角落
-                document.getElementById('result-area').style.opacity = 0;
+                document.getElementById('result-area').style.opacity = "0";
                 const bounds = getScreenBounds();
                 const groups = document.querySelectorAll('.h-group');
                 groups.forEach(g => {
@@ -710,8 +727,8 @@ toggle.onclick = () => {
         toggle.innerText = T.camOff; toggle.classList.remove('active');
         document.getElementById('guide-text').innerText = T.guideMouse;
         cursor.style.display = 'none';
-        const v = document.getElementById('input-video');
-        if (v.srcObject) { v.srcObject.getTracks().forEach(track => track.stop()); v.srcObject = null; }
+        const v = document.getElementById('input-video') as HTMLVideoElement;
+        if (v.srcObject) { (v.srcObject as MediaStream).getTracks().forEach(track => track.stop()); v.srcObject = null; }
         camStarted = false;
     }
     // Update tips if spread/show is active
@@ -759,7 +776,7 @@ hands.onResults(res => {
 // 启动摄像头
 async function startCam() {
     if (camStarted) return;
-    const v = document.getElementById('input-video');
+    const v = document.getElementById('input-video') as HTMLVideoElement;
     const cam = new Camera(v, { onFrame: async () => { await hands.send({ image: v }); }, width: 320, height: 240 });
     await cam.start(); camStarted = true;
 }
