@@ -410,7 +410,9 @@ function selectCard(clientX, clientY) {
 
 // --- 收牌逻辑 ---
 function dismiss() {
-    if (!STATE.selected || STATE.phase === 'FLYING') return;
+    // FLIP 期间禁止收牌：否则 flyToCorner 完成会把 selected 置空，
+    // 未取消的 flip() 继续跑完会在 showUI 里 null.clone() 崩溃（原版遗留竞态，CI 慢环境触发）
+    if (!STATE.selected || STATE.phase === 'FLYING' || STATE.phase === 'FLIP') return;
     document.getElementById('result-area').style.opacity = "0";
     const m = STATE.selected;
     STATE.discardPile.push(m);

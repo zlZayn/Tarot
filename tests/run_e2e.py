@@ -27,9 +27,11 @@ ART.mkdir(parents=True, exist_ok=True)
 W, H = 1280, 800
 
 # headless 无摄像头/无权限时 MediaPipe Camera 抛错属预期（原版同路径），标记后仅记录
+# 平台差异的消息变体：Windows "NotSupportedError: Not supported"；Ubuntu CI "NotFoundError: Requested device not found"
 MEDIA_ERR_MARKERS = (
     "getUserMedia", "Not supported", "NotSupportedError",
     "NotAllowedError", "NotFoundError", "NotReadableError",
+    "device not found", "Requested device",
     "mediaDevices", "Camera",
 )
 
@@ -199,10 +201,10 @@ def main() -> int:
             shot(f"0{draw}-show")
             page.mouse.click(W * 0.5, H * 0.5)  # dismiss
             page.wait_for_timeout(1200)  # 飞回角落动画（前两张）
-        page.wait_for_timeout(1600)  # 第 3 张 dismiss → 展开视图动画
+        page.wait_for_timeout(2000)  # 第 3 张 dismiss → 展开视图动画（CI 慢环境放宽）
 
         # --- 5. 展开视图 ---
-        spread_desc = wait_text("#r-desc", "PAST • PRESENT • FUTURE", 6)
+        spread_desc = wait_text("#r-desc", "PAST • PRESENT • FUTURE", 20)
         if spread_desc != "PAST • PRESENT • FUTURE":
             fatal.append(f"展开视图文案不符: got={spread_desc!r}")
         else:
