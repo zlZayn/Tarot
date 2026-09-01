@@ -46,7 +46,7 @@ def running_panel(
     table.add_row("[muted]已运行[/muted]", f"{uptime // 60}分 {uptime % 60}秒")
     if note:
         table.add_row("[warning]提示[/warning]", note)
-    hotkeys = "[hotkey] O [/hotkey]打开浏览器  [hotkey] R [/hotkey]强制重建  [hotkey] Q [/hotkey]退出"
+    hotkeys = "[hotkey] O [/hotkey]开浏览器  [hotkey] R [/hotkey]重建  [hotkey] Q [/hotkey]退出"
     return Panel(Group(table, Panel(hotkeys, border_style="grey19")), title="运行中", border_style="green")
 
 

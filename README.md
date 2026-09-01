@@ -42,7 +42,7 @@ Ethereal Tarot/
 | `Click Me.bat` | 启动构建产物 `dist/`，端口顺延，自动开浏览器 | 朋友 / 普通用户 | 仅 Python |
 | `Start Dev.bat` | 启动 Vite 开发服务器（改代码自动刷新，热更新） | 开发者 | Node.js |
 | `Build.bat` | 类型检查 + 构建 `dist/`（发布前必跑） | 开发者 | Node.js |
-| `Rich Launcher.bat` | Rich 面板：构建过期检测、确认重建、运行（热键 O/R/Q） | 开发者 | Node.js + uv |
+| `Rich Launcher.bat` | Rich 面板：构建过期检测、确认重建、运行（O 开浏览器 / R 重建 / Q 退出） | 开发者 | Node.js + uv |
 
 ## 🪄 如何使用 (How to Use)
 
@@ -99,7 +99,7 @@ const BACK_URL = "./textures/backs/my_back.jpg";
 * 前置：Node.js ≥ 18 与 Python。
 * `npm install` 安装依赖，`npm run dev` 启动开发服务器 (`http://localhost:5173`，改代码自动刷新)。
 * `npm run build` 构建发布版到 `dist/`；`npm run typecheck` 做类型检查。
-* 开发者启动器：双击 `Rich Launcher.bat`，或 `uv run python launcher.py`（构建过期检测 + 运行面板，热键 O/R/Q）。
+* 开发者启动器：双击 `Rich Launcher.bat`，或 `uv run python launcher.py`（构建过期检测 + 运行面板，O 开浏览器 / R 重建 / Q 退出）。
 * 测试与维护文档见 [tests/README.md](tests/README.md) 与 [AGENTS.md](AGENTS.md)。
 
 ## 📖 文档

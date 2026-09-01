@@ -1,6 +1,6 @@
 """Ethereal Tarot Rich 启动器（开发者入口）。
 
-流程：完整性检查 → 决策（重建/跳过/详情/退出）→ 构建 → 运行面板（热键 O/R/Q）。
+流程：完整性检查 → 决策（重建/跳过/详情/退出）→ 构建 → 运行面板（O 开浏览器 / R 重建 / Q 退出）。
 服务与 serve.py 同机制：127.0.0.1 同进程 ThreadingHTTPServer，退出零残留。
 
 用法:
@@ -64,7 +64,7 @@ def run_server(console: Console, start_port: int, no_open: bool) -> int:
     url = f"http://localhost:{port}"
     if not no_open:
         server.open_browser(url)
-    console.print(f"[success]服务已启动: {url}[/success]  (Ctrl+C 退出，Q 关闭)")
+    console.print(f"[success]服务已启动: {url}[/success]  (O 开浏览器 / R 重建 / Q 退出)")
 
     state = {"stop": False, "rebuild": False, "open": False}
 
