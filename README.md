@@ -9,58 +9,15 @@
 这是一个基于 WebGL (Three.js) 的 3D 塔罗牌应用程序，支持鼠标交互与摄像头手势控制。
 每次抽牌完成会自动保存到浏览器本地（3 张牌与正逆位），下次打开随时回顾。
 
-## 📂 目录结构 (Directory Structure)
+## 🪄 快速开始
 
-为了确保程序正常运行，请保持文件结构完整，**不要移动、删除或重命名文件与素材**。
+**朋友 / 普通用户（只需要 Python）**
 
-```text
-Ethereal Tarot/
-├── Click Me.bat           # 🟢 启动脚本（朋友用，仅需 Python）
-├── Start Dev.bat          # 📝 开发服务器（Vite 热更新）
-├── Build.bat              # 🔨 构建 dist（类型检查 + 构建）
-├── Rich Launcher.bat      # 🧙 开发者 Rich 面板（需 uv）
-├── server/serve.py        # 本地服务器（被 Click Me.bat 调用，端口占用自动顺延）
-├── launcher.py            # 开发者启动器（Rich 面板 + 构建过期检测）
-├── core/ ui/              # 启动器核心逻辑层 / 渲染层（被 launcher.py 使用）
-├── dist/                  # 网页程序本体 (npm run build 生成)
-│   ├── index.html         # 主程序入口
-│   └── textures/          # 素材文件夹
-│       ├── backs/         # 牌背图片 (bm.jpg, bm2.png, bm3.png, bm4.png)
-│       └── cards/         # 牌面图片 (0.jpg 愚者 ~ 21.jpg 世界，共 22 张)
-└── src/                   # 源码文件夹（开发者用）
-    ├── index.html         # 页面结构
-    ├── config/assets.ts   # 图片路径配置（改图片路径改这里）
-    └── ...                # 样式 / 逻辑 / 牌数据 / 多语言模块
-```
+1. 安装 Python（https://www.python.org/downloads/ ，无需 Node.js）。
+2. 双击根目录下的 **`Click Me.bat`**。
+3. 脚本自动启动服务器并打开浏览器（端口被占用时自动顺延）。
 
-> 分享给朋友只需这三部分：`dist/` + `Click Me.bat` + `server/serve.py`。
-
-## 🚪 四个启动入口
-
-| 入口 | 用途 | 适用 | 依赖 |
-|---|---|---|---|
-| `Click Me.bat` | 启动构建产物 `dist/`，端口顺延，自动开浏览器 | 朋友 / 普通用户 | 仅 Python |
-| `Start Dev.bat` | 启动 Vite 开发服务器（改代码自动刷新，热更新） | 开发者 | Node.js |
-| `Build.bat` | 类型检查 + 构建 `dist/`（发布前必跑） | 开发者 | Node.js |
-| `Rich Launcher.bat` | Rich 面板：构建过期检测、确认重建、运行（O 开浏览器 / R 重建 / Q 退出） | 开发者 | Node.js + uv |
-
-## 🪄 如何使用 (How to Use)
-
-本项目专为 Windows 环境设计，利用 Python 快速启动本地服务。
-
-### 前置要求
-
-* 电脑上必须安装 **Python** (用于运行本地服务器)。
-
-> 或者：VS Code + Live Server（核心目的都是启动本地 HTTP 服务，规避图片跨域限制）
-
-### 启动步骤
-
-1. 下载本项目全部文件（源码包不含 `dist/`，需先运行 `Build.bat` 或 `npm run build` 生成）。
-2. 直接双击根目录下的 **`Click Me.bat`** 文件。
-3. 脚本会自动启动服务器，并调用默认浏览器打开应用 (端口被占用时会自动顺延)。
-
-> **注意**：如果不使用脚本，你需要手动在 `dist` 目录下开启一个 HTTP 服务器（如 Live Server），否则图片纹理将无法加载（CORS 跨域限制）。外部资源加载可能较慢，有必要时科学上网。
+> **注意**：必须通过本地 HTTP 服务运行。如果不用脚本，请手动在 `dist/` 目录下开启一个 HTTP 服务器（如 VS Code + Live Server），否则图片纹理将无法加载（CORS 跨域限制）。摄像头手势依赖联网加载 MediaPipe 资源，加载慢时请科学上网。
 
 ## 🖐️ 操作指南
 
@@ -69,11 +26,11 @@ Ethereal Tarot/
     * **点击**：抽取选中的牌。
 
 
-* **手势模式 (需开启摄像头，点击右下角 "Camera Off" 切换模式)**：
+* **手势模式**（需开启摄像头，点击右下角 "Camera Off" 切换模式）：
     * **张掌**：移动光标浏览。
     * **握拳**：选中/确认。
 
-## 🛠️ 自定义设置 (Customization)
+## 🛠️ 自定义设置
 
 ### 更换牌背图案
 
@@ -94,13 +51,55 @@ const BACK_URL = "./textures/backs/my_back.jpg";
 4. 运行 `npm run build` 构建。
 5. 刷新网页即可生效新牌背。
 
-## 🧑‍💻 开发者 (Developer)
+## 🧑‍💻 开发者
 
-* 前置：Node.js ≥ 18 与 Python。
-* `npm install` 安装依赖，`npm run dev` 启动开发服务器 (`http://localhost:5173`，改代码自动刷新)。
-* `npm run build` 构建发布版到 `dist/`；`npm run typecheck` 做类型检查。
-* 开发者启动器：双击 `Rich Launcher.bat`，或 `uv run python launcher.py`（构建过期检测 + 运行面板，O 开浏览器 / R 重建 / Q 退出）。
-* 测试与维护文档见 [tests/README.md](tests/README.md) 与 [AGENTS.md](AGENTS.md)。
+**前置**：Node.js ≥ 18 与 Python（经 uv 管理）。
+
+**常用命令**
+
+```bash
+npm install        # 安装依赖
+npm run dev        # 开发服务器 http://localhost:5173（改代码自动刷新）
+npm run build      # 构建发布版到 dist/
+npm run typecheck  # 类型检查
+```
+
+**四个启动入口**
+
+| 入口 | 用途 | 适用 | 依赖 |
+|---|---|---|---|
+| `Click Me.bat` | 启动构建产物 `dist/`，端口顺延，自动开浏览器 | 朋友 / 普通用户 | 仅 Python |
+| `Start Dev.bat` | 启动 Vite 开发服务器（改代码自动刷新，热更新） | 开发者 | Node.js |
+| `Build.bat` | 类型检查 + 构建 `dist/`（发布前必跑） | 开发者 | Node.js |
+| `Rich Launcher.bat` | Rich 面板：构建过期检测、确认重建、运行（O 开浏览器 / R 重建 / Q 退出） | 开发者 | Node.js + uv |
+
+**给朋友发布**：只需 `dist/` + `Click Me.bat` + `server/serve.py` 三部分，朋友不需要 Node / uv / pip。
+
+**测试**：资源校验与交互 E2E 见 [tests/README.md](tests/README.md)，命令速查见 [AGENTS.md](AGENTS.md)。
+
+### 📂 项目结构
+
+为了确保程序正常运行，请保持文件结构完整，**不要移动、删除或重命名文件与素材**。
+
+```text
+Ethereal Tarot/
+├── Click Me.bat           # 🟢 启动脚本（朋友用，仅需 Python）
+├── Start Dev.bat          # 📝 开发服务器（Vite 热更新）
+├── Build.bat              # 🔨 构建 dist（类型检查 + 构建）
+├── Rich Launcher.bat      # 🧙 开发者 Rich 面板（需 uv）
+├── server/serve.py        # 本地服务器（被 Click Me.bat 调用，端口占用自动顺延）
+├── launcher.py            # 开发者启动器（Rich 面板 + 构建过期检测）
+├── core/ ui/              # 启动器核心逻辑层 / 渲染层（被 launcher.py 使用）
+├── dist/                  # 网页程序本体 (npm run build 生成)
+│   ├── index.html         # 主程序入口
+│   └── textures/          # 素材文件夹
+│       ├── backs/         # 牌背图片 (bm.jpg, bm2.png, bm3.png, bm4.png)
+│       └── cards/         # 牌面图片 (0.jpg 愚者 ~ 21.jpg 世界，共 22 张)
+└── src/                   # 源码文件夹
+    ├── index.html         # 页面结构
+    ├── config/assets.ts   # 图片路径配置（改图片路径改这里）
+    └── ...                # 样式 / 逻辑 / 牌数据 / 多语言模块
+```
 
 ## 📖 文档
 
