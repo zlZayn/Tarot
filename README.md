@@ -74,6 +74,7 @@ npm run typecheck  # 类型检查
 | `Rich Launcher.bat` | Rich 面板：构建过期检测、确认重建、运行（O 开浏览器 / R 重建 / Q 退出） | 开发者 | Node.js + uv |
 
 **给朋友发布**：只需 `dist/` + `Click Me.bat` + `server/serve.py` 三部分，朋友不需要 Node / uv / pip。
+打 `v*` 标签（如 `git tag v1.0.0 && git push --tags`）→ GitHub Actions 自动完成构建、测试、打包并上传 Releases。
 
 **测试**：资源校验与交互 E2E 见 [tests/README.md](tests/README.md)，命令速查见 [AGENTS.md](AGENTS.md)。
 

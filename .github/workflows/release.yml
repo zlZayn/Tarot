@@ -1,0 +1,60 @@
+name: Release
+
+# 打 v* tag 时触发：构建 → 测试 → 打包 zip → 上传 GitHub Releases
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install frontend deps
+        run: npm ci
+
+      - name: Build dist
+        run: npm run build
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Install Python deps
+        run: uv sync
+
+      - name: Install Playwright chromium (with system deps)
+        run: uv run playwright install --with-deps chromium
+
+      - name: Start server and run checks + E2E
+        run: |
+          python3 server/serve.py --dir dist > /tmp/serve.log 2>&1 &
+          sleep 3
+          uv run python tests/run_checks.py http://localhost:8000
+          uv run python tests/run_e2e.py http://localhost:8000
+
+      - name: Assemble release package
+        run: |
+          TAG="${{ github.ref_name }}"
+          DIR="Ethereal-Tarot-$TAG"
+          mkdir -p "$DIR/server"
+          cp -r dist "$DIR/dist"
+          cp "Click Me.bat" "$DIR/"
+          cp server/serve.py "$DIR/server/serve.py"
+          zip -r "Ethereal-Tarot-$TAG.zip" "$DIR"
+
+      - name: Upload release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: Ethereal-Tarot-*.zip
+          generate_release_notes: true

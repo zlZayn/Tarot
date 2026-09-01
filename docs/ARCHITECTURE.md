@@ -12,6 +12,7 @@
 - 启动（朋友/轻量）：`server/serve.py` 纯标准库（端口顺延、同进程服务零残留、dist 过期提示）
 - 启动（开发者 Rich）：`launcher.py` + `core/`（零 Rich 依赖：config/integrity/builder/server）+ `ui/`（theme/spinners/prompts/dashboard）；构建元数据 `.ethereal-meta.json` 放项目根（dist 会被 emptyOutDir 清空）
 - Python 工具链：uv 管理（`pyproject.toml` + `uv.lock` + `.python-version` 3.12.10）；运行时零依赖，测试用 dev 组 playwright
+- 发布：GitHub Actions（`.github/workflows/release.yml`），v* tag 触发：npm ci → build → uv sync → 测试（checks + E2E）→ 组装 dist + Click Me.bat + serve.py → zip 上传 Releases
 
 ## 分层
 - `src/index.html`：HTML 结构 + CDN 脚本 + 入口（不含样式与业务脚本）
