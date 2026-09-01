@@ -5,7 +5,7 @@
 - 模块手册 → [src/README.md](src/README.md)
 - 启动器（Rich）→ [core/README.md](core/README.md) · [ui/README.md](ui/README.md)
 - 启动器（零依赖）→ [server/README.md](server/README.md)
-- CI/Release → [.github/README.md](.github/README.md)
+- CI/Release → [.github/workflows/README.md](.github/workflows/README.md)
 - 测试说明 → [tests/README.md](tests/README.md)
 - 决策记录 → [.agents/notes/](.agents/notes/)
 
@@ -21,7 +21,7 @@
 - 开发者启动器：双击 `Rich Launcher.bat`，或 `uv run python launcher.py`（`--check-only` 只做完整性检查；`--force` 强制重建）
 - 运行（轻量）：`python server/serve.py --dir dist --open`
 - 测试：`uv run python tests/run_checks.py http://localhost:8000` · `uv run python tests/run_e2e.py http://localhost:8000`（首次 `uv run playwright install chromium`）
-- 发布：打 `v*` tag 推送 → GitHub Actions 自动构建/测试/打包/上传 Releases（见 [.github/README.md](.github/README.md)）；手动包则用 `Build.bat` + `Rich Launcher.bat` 校验后复制 dist + bat + serve.py
+- 发布：打 `v*` tag 推送 → GitHub Actions 自动构建/测试/打包/上传 Releases（见 [.github/workflows/README.md](.github/workflows/README.md)）；手动包则用 `Build.bat` + `Rich Launcher.bat` 校验后复制 dist + bat + serve.py
 
 ## 验证快照（2026-09-01）
 - typecheck: 0 error
