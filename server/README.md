@@ -10,7 +10,7 @@
 
 ## 变更影响路由
 - 改 serve.py 的行为 → 同步更新本 README 与根 README 的"快速开始"节
-- 完整 Rich 版启动器实施时替换本文件所在模块，见根 AGENTS.md 待办
+- Rich 版改行为 → 在 core/、ui/、launcher.py 侧处理，同步其双件与根 README 入口描述
 
 ## 参考
 - 决策 → [2026-09-01-launcher](../.agents/notes/2026-09-01-launcher.md)

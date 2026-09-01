@@ -17,7 +17,7 @@
 ## 常用命令
 - 前端：`npm run dev` · `npm run build` · `npm run typecheck`
 - Python 测试环境：`uv sync`（变更 py 依赖后 `uv lock && uv sync`）
-- 开发者启动器：`uv run python launcher.py`（`--check-only` 只做完整性检查；`--force` 强制重建）
+- 开发者启动器：双击 `Rich Launcher.bat`，或 `uv run python launcher.py`（`--check-only` 只做完整性检查；`--force` 强制重建）
 - 运行（轻量）：`python server/serve.py --dir dist --open`
 - 测试：`uv run python tests/run_checks.py http://localhost:8000` · `uv run python tests/run_e2e.py http://localhost:8000`（首次 `uv run playwright install chromium`）
 
