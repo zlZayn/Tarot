@@ -68,11 +68,38 @@ def run_server(console: Console, start_port: int, no_open: bool) -> int:
 
     state = {"stop": False, "rebuild": False, "open": False}
 
+    def read_key() -> str | None:
+        """单键读取、无回显、无需回车；返回 None 表示输入结束（EOF/异常）。"""
+        if sys.stdin.isatty():
+            if sys.platform == "win32":
+                import msvcrt
+
+                try:
+                    return msvcrt.getwch().upper()
+                except Exception:
+                    return None
+            import termios
+            import tty
+
+            fd = sys.stdin.fileno()
+            old = termios.tcgetattr(fd)
+            try:
+                tty.setcbreak(fd)
+                return sys.stdin.read(1).upper()
+            except Exception:
+                return None
+            finally:
+                termios.tcsetattr(fd, termios.TCSADRAIN, old)
+        try:
+            ch = sys.stdin.read(1)
+        except Exception:
+            return None
+        return ch.upper() if ch else None
+
     def hotkeys() -> None:
         while not state["stop"]:
-            try:
-                key = input().strip().upper()
-            except EOFError:
+            key = read_key()
+            if key is None:
                 break
             if key in ("Q", "QUIT", "EXIT"):
                 state["stop"] = True
@@ -84,13 +111,16 @@ def run_server(console: Console, start_port: int, no_open: bool) -> int:
     threading.Thread(target=hotkeys, daemon=True).start()
 
     started = time.monotonic()
+    last_sec = -1
     try:
-        with Live(console=console, refresh_per_second=4) as live:
+        with Live(console=console, refresh_per_second=2) as live:
             while not state["stop"]:
+                changed = False
                 if state["open"]:
                     state["open"] = False
                     server.open_browser(url, delay=0)
-                    live.update(running_panel(console, url, port, str(C.DIST), started, note="已打开浏览器"))
+                    note = "已打开浏览器"
+                    changed = True
                 elif state["rebuild"]:
                     state["rebuild"] = False
                     live.stop()
@@ -102,14 +132,23 @@ def run_server(console: Console, start_port: int, no_open: bool) -> int:
                         runnable.start()
                         console.print("[success]重建完成，服务已恢复[/success]")
                         started = time.monotonic()
+                        note = ""
                     else:
                         console.print(Panel(tail, title="构建失败", border_style="red"))
-                        console.print("[warning]继续运行旧版本服务，输入 R 可重试[/warning]")
+                        console.print("[warning]继续运行旧版本服务，按 R 可重试[/warning]")
                         runnable = server.TarotHTTPServer(C.DIST, port)
                         runnable.start()
+                        note = "上次重建失败"
                     live.start()
-                live.update(running_panel(console, url, port, str(C.DIST), started))
-                time.sleep(0.25)
+                    changed = True
+                else:
+                    note = ""
+                uptime_sec = int(time.monotonic() - started)
+                # 只在"秒变化 / 状态动作"时重绘：打字回车不再刷出多余面板
+                if changed or uptime_sec != last_sec:
+                    live.update(running_panel(console, url, port, str(C.DIST), started, note=note))
+                    last_sec = uptime_sec
+                time.sleep(0.2)
     except KeyboardInterrupt:
         pass
     finally:
