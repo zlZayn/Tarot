@@ -11,13 +11,13 @@
 
 ## 🪄 快速开始
 
-**朋友 / 普通用户（只需要 Python）**
+**朋友 / 普通用户**：装好 Python，两步打开。
 
-1. 安装 Python（https://www.python.org/downloads/ ，无需 Node.js）。
-2. 双击根目录下的 **`Click Me.bat`**。
-3. 脚本自动启动服务器并打开浏览器（端口被占用时自动顺延）。
+1. 安装 [Python](https://www.python.org/downloads/)（不需要 Node.js）
+2. 双击 `Click Me.bat`，浏览器自动打开（端口被占用时自动顺延）
 
-> **注意**：必须通过本地 HTTP 服务运行。如果不用脚本，请手动在 `dist/` 目录下开启一个 HTTP 服务器（如 VS Code + Live Server），否则图片纹理将无法加载（CORS 跨域限制）。摄像头手势依赖联网加载 MediaPipe 资源，加载慢时请科学上网。
+打不开图？塔罗牌纹理依赖本地 HTTP 服务：不用脚本时，可以用 [VS Code Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) 打开 `dist/` 目录。
+摄像头手势模式需要联网加载 MediaPipe 资源，加载慢时可尝试科学上网。
 
 ## 🖐️ 操作指南
 
@@ -34,22 +34,18 @@
 
 ### 更换牌背图案
 
-你可以更改塔罗牌背面的图案（默认为 `bm4.png`）。
+默认牌背是 `bm4.png`，可自由替换：
 
-1. 将你想要的图片（推荐 .png 或 .jpg）放入 `public/textures/backs/` 文件夹中。
-2. 使用记事本或代码编辑器打开 `src/config/assets.ts`。
-3. 搜索关键词 `BACK_URL` 并修改文件名：
+1. 把新图片（`.png` 或 `.jpg`）放入 `public/textures/backs/`。
+2. 打开 `src/config/assets.ts`，修改 `BACK_URL`：
 
 ```javascript
-// 修改前
 const BACK_URL = "./textures/backs/bm4.png";
-
-// 修改后 (假设你的新图片叫 my_back.jpg)
+// 改成你的文件，例如：
 const BACK_URL = "./textures/backs/my_back.jpg";
 ```
 
-4. 运行 `npm run build` 构建。
-5. 刷新网页即可生效新牌背。
+3. 运行 `npm run build` 重新构建，刷新网页生效。
 
 ## 🧑‍💻 开发者
 
@@ -73,10 +69,21 @@ npm run typecheck  # 类型检查
 | `Build.bat` | 类型检查 + 构建 `dist/`（发布前必跑） | 开发者 | Node.js |
 | `Rich Launcher.bat` | Rich 面板：构建过期检测、确认重建、运行（O 开浏览器 / R 重建 / Q 退出） | 开发者 | Node.js + uv |
 
-**给朋友发布**：只需 `dist/` + `Click Me.bat` + `server/serve.py` 三部分，朋友不需要 Node / uv / pip。
-打 `v*` 标签（如 `git tag v1.0.0 && git push --tags`）→ GitHub Actions 自动完成构建、测试、打包并上传 Releases。
+**测试**
 
-**测试**：资源校验与交互 E2E 见 [tests/README.md](tests/README.md)，命令速查见 [AGENTS.md](AGENTS.md)。
+资源校验与交互 E2E 见 [tests/README.md](tests/README.md)，命令速查见 [AGENTS.md](AGENTS.md)。
+
+**发布与分享**
+
+- **发布新版本**：打 `v*` 标签，GitHub Actions 自动完成构建、测试、打包并上传 Releases：
+
+```bash
+git tag v1.0.0
+git push --tags
+```
+
+- **给朋友**：分享 [Releases 页面](https://github.com/zlZayn/Tarot/releases) 的最新 zip——解压后双击 `Click Me.bat` 即可运行。
+zip 只含 `dist/` + `Click Me.bat` + `server/serve.py`，无任何开发文件，朋友不需要 Node / uv / pip。
 
 ### 📂 项目结构
 
