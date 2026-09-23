@@ -1,4 +1,6 @@
 // UI 文案（中文），原样搬运自原 index.html 的 UI_TEXT.cn，未改写。
+import type { UiText } from "./en";
+
 export const uiTextZh = {
   logo: "虚幻卡罗牌",
   camOff: "摄像头已关",
@@ -22,4 +24,4 @@ export const uiTextZh = {
   historyTitle: "占卜环节",
   posNames: ["过去", "现在", "未来"],
   defaultArcana: "阿尔卡纳"
-};
+} satisfies UiText;
