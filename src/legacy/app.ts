@@ -60,6 +60,8 @@ scene.add(new THREE.PointLight(0x4466ff, 3.0, 25).translateY(0).translateX(10).t
 
 // --- 全局状态对象 ---
 interface CardState { id: number; isRev: boolean; }
+/** 阶段机取值；'SCROLL' 仅出现在守卫比较中（历史遗留、无赋值点），保留以维持原判定语义 */
+type Phase = 'INTRO' | 'IDLE' | 'SCROLL' | 'SHOW' | 'SPREAD_VIEW' | 'REVIEW_VIEW' | 'FLYING' | 'FLIP';
 interface AppState {
     mode: 'MOUSE' | 'HAND';
     cards: THREE.Mesh[];
@@ -67,7 +69,7 @@ interface AppState {
     activeCards: number[];
     discardPile: THREE.Mesh[];
     offset: number; velocity: number;
-    phase: string;
+    phase: Phase;
     selected: THREE.Mesh | null;
     handX: number; handY: number; targetHandX: number; targetHandY: number; isHandVisible: boolean;
     isFist: boolean; fistFrames: number;
