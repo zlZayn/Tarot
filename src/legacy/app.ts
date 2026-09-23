@@ -1,9 +1,10 @@
 // 原 src/index.html 内联 <script type="module"> 的整体搬运区（不拆分、不重写）。
-// 改动点（仅此四处，其余均为原样搬运）：
+// 改动点（仅此五处，其余均为原样搬运）：
 //   1. three 及插件改为从 npm 包解析（版本仍为 0.160.0，与原 CDN 完全一致）
 //   2. 数据/文案/资源配置抽到 src/data、src/i18n、src/config/assets.ts
 //   3. 新增抽牌记录保存（src/services/records.ts），仅在 3 张抽牌完成时写入
 //   4. 类型化（2026-09-01 移除 @ts-nocheck）：显式类型/受控断言，运行时语义不变
+//   5. 类型补完（2026-09-23）：为搬运函数补显式签名类型，运行时语义不变
 import * as THREE from 'three';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
@@ -13,6 +14,7 @@ import { TAROT_EN, TAROT_CN } from '../data/cards';
 import { UI_TEXT } from '../i18n';
 import { IMG_URL, BACK_URL } from '../config/assets';
 import { saveDrawSession } from '../services/records';
+import type { TarotCardData } from '../types/tarot';
 
 // 当前语言设置
 let curLang: 'en' | 'cn' = 'en';
@@ -99,7 +101,7 @@ function getScreenBounds() {
 }
 
 // --- 语言与UI文本更新 ---
-function getTarotData(id) {
+function getTarotData(id: number): TarotCardData {
     return curLang === 'en' ? TAROT_EN[id] : TAROT_CN[id];
 }
 
@@ -210,7 +212,7 @@ langBtn.onclick = () => {
 };
 
 // --- 卡片生成 ---
-function createCard(tex, i, isRev) {
+function createCard(tex: THREE.Texture, i: number, isRev: boolean): void {
     const geo = new THREE.BoxGeometry(2.6, 4.4, 0.03);
     tex.colorSpace = THREE.SRGBColorSpace;
     const matSide = new THREE.MeshStandardMaterial({ color: 0x000000, roughness: 1.0, metalness: 0.0 });
@@ -230,7 +232,7 @@ function createCard(tex, i, isRev) {
 }
 
 // --- 占位纹理生成 ---
-function getFallbackTexture(text) {
+function getFallbackTexture(text: string): THREE.CanvasTexture {
     const cvs = document.createElement('canvas'); cvs.width = 512; cvs.height = 800;
     const ctx = cvs.getContext('2d');
     const grd = ctx.createRadialGradient(256, 400, 0, 256, 400, 400);
@@ -287,7 +289,7 @@ function performShuffleAndSpin() {
 }
 
 // --- 动画与更新循环 ---
-function update(dt) {
+function update(dt: number): void {
     if (STATE.isHoveringUI) { STATE.velocity = 0; }
     if (STATE.phase !== 'IDLE' && STATE.phase !== 'SCROLL') return;
     if (STATE.mode === 'HAND') {
@@ -357,7 +359,7 @@ function update(dt) {
 }
 
 // --- 选择与翻牌逻辑 ---
-function selectCard(clientX, clientY) {
+function selectCard(clientX: number, clientY: number): void {
     if (STATE.activeCards.length === 0) return;
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
@@ -409,7 +411,7 @@ function selectCard(clientX, clientY) {
 }
 
 // --- 收牌逻辑 ---
-function dismiss() {
+function dismiss(): void {
     // FLIP 期间禁止收牌：否则 flyToCorner 完成会把 selected 置空，
     // 未取消的 flip() 继续跑完会在 showUI 里 null.clone() 崩溃（原版遗留竞态，CI 慢环境触发）
     if (!STATE.selected || STATE.phase === 'FLYING' || STATE.phase === 'FLIP') return;
@@ -435,7 +437,7 @@ function dismiss() {
 }
 
 // --- 飞回角落动画 ---
-function flyToCorner(m, stackIdx) {
+function flyToCorner(m: THREE.Mesh, stackIdx: number): void {
     const bounds = getScreenBounds();
     const targetX = bounds.left + 1.0 + (stackIdx * 1.4);
     const targetY = bounds.bottom + 1.4;
@@ -461,7 +463,7 @@ function flyToCorner(m, stackIdx) {
 }
 
 // --- 展开阅读视图 ---
-function flyToSpreadView() {
+function flyToSpreadView(): void {
     STATE.phase = 'SPREAD_VIEW';
     STATE.selected = null;
     const T = getText();
@@ -502,7 +504,7 @@ function flyToSpreadView() {
 }
 
 // --- 收回展开并恢复牌组 ---
-function resetSpread() {
+function resetSpread(): void {
     if (STATE.phase !== 'SPREAD_VIEW') return;
     STATE.phase = 'FLYING';
     document.getElementById('result-area').style.opacity = "0";
@@ -533,7 +535,7 @@ function resetSpread() {
 }
 
 // --- 显示结果并记录历史 ---
-function showUI(dataState) {
+function showUI(dataState: CardState): void {
     const T = getText();
     const d = getTarotData(dataState.id);
     const isRev = dataState.isRev;
@@ -544,7 +546,7 @@ function showUI(dataState) {
 
     const hBox = document.getElementById('history-box');
     const currentCount = STATE.discardPile.length;
-    let targetGroup;
+    let targetGroup: HTMLElement;
 
     if (currentCount === 0) {
         targetGroup = document.createElement('div');
@@ -595,7 +597,7 @@ function showUI(dataState) {
 }
 
 // --- 历史回顾视图 ---
-function showReviewSpread(targetGroup) {
+function showReviewSpread(targetGroup: HTMLElement): void {
     const T = getText();
     const clones = targetGroup.userData.clones;
     const snapshots = targetGroup.userData.snapshots;
@@ -777,7 +779,7 @@ hands.onResults(res => {
 });
 
 // 启动摄像头
-async function startCam() {
+async function startCam(): Promise<void> {
     if (camStarted) return;
     const v = document.getElementById('input-video') as HTMLVideoElement;
     const cam = new Camera(v, { onFrame: async () => { await hands.send({ image: v }); }, width: 320, height: 240 });
