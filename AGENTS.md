@@ -39,6 +39,6 @@
 - 编辑器原子保存会在 src/ 生成 `*.tmpdir` 临时目录，chokidar Windows 上 EBUSY 崩溃；vite.config.ts 已忽略，勿扩监视范围
 - Windows 控制台 GBK 打印 `•` 等 Unicode 会崩；三个 Python 入口（`launcher.py` / `tests/run_e2e.py` / `tests/run_checks.py`）都 reconfigure UTF-8，加第四个时照抄那段
 - Vite publicDir 会把 public/ 里的维护双件拷进 dist，且 closeBundle 钩子早于拷贝执行（删了会被拷回）；必须用构建后置脚本 scripts/clean-dist.mjs
-- `uv.lock` 里的 URL 走的是**本机全局** `AppData\Roaming\uv\uv.toml` 的 `index-url`（tuna 镜像），不是仓库的选择：plain `uv lock` 在任何配了镜像的机器上都会重新写回镜像 URL。项目群约定「锁文件 `resolved` 必须官方源」在 Python 侧要不要成立**未裁** —— 已测两条路：① 在 `pyproject.toml` pin `[[tool.uv.index]]` 到 `pypi.org`（`default = true`），重跑 `uv lock` 得官方 URL 且 `uv lock --check` 绿（90 条 URL 换 host、**sha256 与包版本集合逐条不变**）；② 只在文档里豁免 Python 侧。反例别再用「去手工改 URL」：那样 `uv lock --check` 会红，下一个人 `uv lock` 一改就回退
+- `uv.lock` 的 URL 曾经是**机器全局**配置的结果，不是仓库选择：`AppData\Roaming\uv\uv.toml` 里的 `index-url` 指向 tuna 镜像，任何配了镜像的机器跑 plain `uv lock` 都会把 90 条 URL 写回镜像。项目群约定「锁文件 `resolved` 必须官方源」，Python 侧**已按 pin 官方 index 落定**：`pyproject.toml` 里 `[[tool.uv.index]]` = `https://pypi.org/simple` + `default = true`，安装源由仓自决、与本机配置无关；`uv lock --check` 就是这条的执行体（红了即有人改了源或锁漂了）。**代价要知道**：这条改变所有协作者与 CI 的 `uv` 安装源（要镜像加速得显式改，别指望偷偷用本机全局配置 —— 那正是这次修掉的东西）。当初另一条路（手工洗 URL 不动配置）已实测为假修：`uv lock --check` 当场红，下次 `uv lock` 就回退
 - 本仓 4 个 `.bat` 是纯 ASCII + **LF**，实测 cmd 能容忍；兄弟仓约定 `.cmd` 必须 CRLF + GBK —— 别拿那条来「顺手改行尾」，要改先在这行留下结论
 - .bat 文件禁止中文/非 ASCII：cmd 按 GBK 解析 UTF-8 中文注释会把括号块拆碎（if/exit 失效、乱码命令）；bat 一律纯 ASCII，中文说明写 README
