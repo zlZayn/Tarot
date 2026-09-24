@@ -13,3 +13,9 @@ dev = [
 
 [tool.uv]
 package = false
+
+# 安装源由仓自决，不受各机器全局 uv.toml 的 index-url 摆布（项目群约定：锁文件 resolved 必须官方源）。
+# 不写这条时，一台配了镜像的机器跑 plain `uv lock` 就会把 90 条 URL 全写回镜像 —— 理由记在 AGENTS.md 活跃坑。
+[[tool.uv.index]]
+url = "https://pypi.org/simple"
+default = true
