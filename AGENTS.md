@@ -33,7 +33,9 @@
 
 ## 待办
 - [ ] 前端单测要不要开：**曾是「legacy 无纯函数可测」而暂缓**（见 [.agents/notes/2026-09-01-testing-as-gate.md](.agents/notes/2026-09-01-testing-as-gate.md)），但前提已变 —— `services/records.ts`、`i18n/`、`data/cards.ts` 现在都是可测纯模块。要动就先裁范围（只测非 legacy 那三个），别顺手引 vitest 全家桶
-- 其余无当前待办（决策/否决历史见 [.agents/notes/](.agents/notes/)；迁移、类型化、Rich 启动器均已完成）
+- [ ] **本仓没有 push 前的 CI**：`.github/workflows/` 只有 `release.yml`（打 `v*` tag 才跑构建/测试），所以 `npm run typecheck` 与 `tests/run_checks.py` **没有任何自动执行体** —— 每次都要靠人跑。补一条最小 `ci.yml`（typecheck + run_checks，可选 build）是独立一刀，范围与维护者定
+- [ ] **严格开关要不要对齐兄弟仓**：本仓 `strict: false`（六仓唯一），AIA / ATC / imagora 三开关全开；跨仓流程已由容器仓 `dsh-plugins/AGENTS.md`「逐条裁定」第 11 条立好（真实配置量位点、两开关同开单测、逐开关各一刀）。**成本集中在 `src/legacy/app.ts` 那八百余行受保护搬运区**，动它要先维护者点头
+- 其余无当前待办（决策/否决历史见 [.agents/notes/](.agents/notes/)；迁移、类型化、Rich 启动器均已完成；锁文件官方源一条已于 2026-09-24 由 pin 官方 index 结清）
 
 ## 活跃坑
 - 编辑器原子保存会在 src/ 生成 `*.tmpdir` 临时目录，chokidar Windows 上 EBUSY 崩溃；vite.config.ts 已忽略，勿扩监视范围
