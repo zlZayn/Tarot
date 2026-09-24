@@ -14,6 +14,13 @@
 import sys
 from pathlib import Path
 
+# Windows 控制台默认 GBK 无法打印 • 等字符，统一用 UTF-8 输出（与 launcher.py / run_e2e.py 同法）
+for stream in (sys.stdout, sys.stderr):
+    try:
+        stream.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+
 ROOT = Path(__file__).resolve().parent.parent
 PUBLIC = ROOT / "public"
 DIST = ROOT / "dist"
