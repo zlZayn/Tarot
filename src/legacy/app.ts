@@ -1,10 +1,14 @@
 // 原 src/index.html 内联 <script type="module"> 的整体搬运区（不拆分、不重写）。
-// 改动点（仅此五处，其余均为原样搬运）：
+// 改动点（逐条追加，勿只改代码不记账；其余均为原样搬运）：
 //   1. three 及插件改为从 npm 包解析（版本仍为 0.160.0，与原 CDN 完全一致）
 //   2. 数据/文案/资源配置抽到 src/data、src/i18n、src/config/assets.ts
 //   3. 新增抽牌记录保存（src/services/records.ts），仅在 3 张抽牌完成时写入
 //   4. 类型化（2026-09-01 移除 @ts-nocheck）：显式类型/受控断言，运行时语义不变
 //   5. 类型补完（2026-09-23）：为搬运函数补显式签名类型，运行时语义不变
+//   6. dismiss 竞态修复（2026-09-01，5bc767c）：收牌守卫多挡一个 FLIP 相位 —— flyToCorner 完成会把 selected 置空，
+//      未取消的 flip() 继续跑完会在 showUI 里 null.clone() 崩溃（原版遗留竞态，CI 慢环境真触发）。**这是行为修复，不是纯类型改动**
+//   7. 状态机取值显式化（2026-09-23，a84c1ba）：STATE.phase 从 string 收窄为 Phase 联合；'SCROLL' 只在守卫比较里出现、
+//      无赋值点，刻意保留以维持原判定语义。运行时零变化
 import * as THREE from 'three';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
