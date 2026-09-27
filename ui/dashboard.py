@@ -1,4 +1,5 @@
 """面板渲染（校验结果表 / 运行态面板）。"""
+
 from __future__ import annotations
 
 import time
@@ -47,7 +48,11 @@ def running_panel(
     if note:
         table.add_row("[warning]提示[/warning]", note)
     hotkeys = "[hotkey] O [/hotkey]开浏览器  [hotkey] R [/hotkey]重建  [hotkey] Q [/hotkey]退出"
-    return Panel(Group(table, Panel(hotkeys, border_style="grey19")), title="运行中", border_style="green")
+    return Panel(
+        Group(table, Panel(hotkeys, border_style="grey19")),
+        title="运行中",
+        border_style="green",
+    )
 
 
 def banner(console: Console, app: str, version: str) -> None:

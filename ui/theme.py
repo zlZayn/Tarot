@@ -1,4 +1,5 @@
 """主题定义（统一颜色语义）。"""
+
 from rich.theme import Theme
 
 THEME = Theme(

@@ -11,6 +11,7 @@
 
 退出码: 0 = 正常; 1 = 需重建(--check-only) / 构建失败 / 端口不可用
 """
+
 from __future__ import annotations
 
 import argparse
@@ -65,7 +66,9 @@ def run_server(console: Console, start_port: int, no_open: bool) -> int:
     url = f"http://localhost:{port}"
     if not no_open:
         server.open_browser(url)
-    console.print(f"[success]服务已启动: {url}[/success]  (O 开浏览器 / R 重建 / Q 退出)")
+    console.print(
+        f"[success]服务已启动: {url}[/success]  (O 开浏览器 / R 重建 / Q 退出)"
+    )
 
     state = {"stop": False, "rebuild": False, "open": False}
 
@@ -136,7 +139,9 @@ def run_server(console: Console, start_port: int, no_open: bool) -> int:
                         note = ""
                     else:
                         console.print(Panel(tail, title="构建失败", border_style="red"))
-                        console.print("[warning]继续运行旧版本服务，按 R 可重试[/warning]")
+                        console.print(
+                            "[warning]继续运行旧版本服务，按 R 可重试[/warning]"
+                        )
                         runnable = server.TarotHTTPServer(C.DIST, port)
                         runnable.start()
                         note = "上次重建失败"
@@ -147,7 +152,11 @@ def run_server(console: Console, start_port: int, no_open: bool) -> int:
                 uptime_sec = int(time.monotonic() - started)
                 # 只在"秒变化 / 状态动作"时重绘：打字回车不再刷出多余面板
                 if changed or uptime_sec != last_sec:
-                    live.update(running_panel(console, url, port, str(C.DIST), started, note=note))
+                    live.update(
+                        running_panel(
+                            console, url, port, str(C.DIST), started, note=note
+                        )
+                    )
                     last_sec = uptime_sec
                 time.sleep(0.2)
     except KeyboardInterrupt:
@@ -163,7 +172,12 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--check-only", action="store_true", help="只做完整性检查并退出")
     ap.add_argument("--no-open", action="store_true", help="启动后不自动打开浏览器")
     ap.add_argument("--force", action="store_true", help="跳过比对，强制重建")
-    ap.add_argument("--port", type=int, default=C.DEFAULT_PORT, help=f"起始端口（默认 {C.DEFAULT_PORT}，被占用自动顺延）")
+    ap.add_argument(
+        "--port",
+        type=int,
+        default=C.DEFAULT_PORT,
+        help=f"起始端口（默认 {C.DEFAULT_PORT}，被占用自动顺延）",
+    )
     args = ap.parse_args(argv)
 
     console = Console(theme=THEME)
@@ -196,7 +210,11 @@ def main(argv: list[str] | None = None) -> int:
                     console.print(f"[warning]原因: {r}[/warning]")
             else:
                 console.print("[info]无具体原因（首次/强制模式）[/info]")
-            choice = choose(console, "如何处理", {"1": "立即重新构建", "2": "跳过构建，使用旧版本运行", "4": "退出"})
+            choice = choose(
+                console,
+                "如何处理",
+                {"1": "立即重新构建", "2": "跳过构建，使用旧版本运行", "4": "退出"},
+            )
             if choice == "4":
                 return 0
         if choice in ("1", "3"):

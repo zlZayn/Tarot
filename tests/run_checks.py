@@ -11,6 +11,7 @@
 
 退出码: 0 = 全部通过; 1 = 有失败
 """
+
 import contextlib
 import sys
 from pathlib import Path
@@ -75,7 +76,9 @@ def check_http(base: str) -> None:
 def check_dist_root() -> None:
     for name in DIST_FORBIDDEN:
         if (DIST / name).exists():
-            failures.append(f"dist 根出现不应打包的文件: {name}（public 维护双件被误拷，见 vite.config.ts closeBundle）")
+            failures.append(
+                f"dist 根出现不应打包的文件: {name}（public 维护双件被误拷，见 vite.config.ts closeBundle）"
+            )
 
 
 def main() -> int:

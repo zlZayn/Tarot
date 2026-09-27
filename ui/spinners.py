@@ -1,4 +1,5 @@
 """加载态封装（Status 上下文管理器，统一文案）。"""
+
 from __future__ import annotations
 
 from typing import Self

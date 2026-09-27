@@ -1,4 +1,5 @@
 """本地 HTTP 服务（同进程 ThreadingHTTPServer：退出即零残留）。"""
+
 from __future__ import annotations
 
 import socket

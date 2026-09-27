@@ -10,6 +10,7 @@
 
 退出码: 0 = 正常运行结束; 1 = dist 缺失等致命错误
 """
+
 import argparse
 import socket
 import sys
@@ -60,7 +61,9 @@ def serve(dist: Path, start_port: int, open_browser: bool, check: bool = True) -
     if not dist.is_dir() or not (dist / "index.html").is_file():
         return err(f"目录 {dist} 缺少 index.html，先运行 Build.bat 或 npm run build")
     if check and check_stale(dist):
-        warn("检测到源码比 dist 新，当前启动的可能是旧版本；需要我可运行 Build.bat / npm run build")
+        warn(
+            "检测到源码比 dist 新，当前启动的可能是旧版本；需要我可运行 Build.bat / npm run build"
+        )
 
     try:
         port = pick_port(start_port)
@@ -87,9 +90,13 @@ def serve(dist: Path, start_port: int, open_browser: bool, check: bool = True) -
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="Ethereal Tarot 本地启动器")
     ap.add_argument("--dir", default="dist", help="要服务的目录（默认 dist）")
-    ap.add_argument("--port", type=int, default=8000, help="起始端口（默认 8000，被占用自动顺延）")
+    ap.add_argument(
+        "--port", type=int, default=8000, help="起始端口（默认 8000，被占用自动顺延）"
+    )
     ap.add_argument("--open", action="store_true", help="启动后自动打开浏览器")
-    ap.add_argument("--no-check", action="store_true", help="跳过过期检查（默认不跳过）")
+    ap.add_argument(
+        "--no-check", action="store_true", help="跳过过期检查（默认不跳过）"
+    )
     args = ap.parse_args(argv)
 
     if args.no_check:

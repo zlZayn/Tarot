@@ -14,6 +14,7 @@
 用法: python tests/run_e2e.py [base_url]   # 默认 http://localhost:8000
 退出码: 0 = 全部通过; 1 = 有失败
 """
+
 import contextlib
 import sys
 import time
@@ -30,10 +31,16 @@ W, H = 1280, 800
 # headless 无摄像头/无权限时 MediaPipe Camera 抛错属预期（原版同路径），标记后仅记录
 # 平台差异的消息变体：Windows "NotSupportedError: Not supported"；Ubuntu CI "NotFoundError: Requested device not found"
 MEDIA_ERR_MARKERS = (
-    "getUserMedia", "Not supported", "NotSupportedError",
-    "NotAllowedError", "NotFoundError", "NotReadableError",
-    "device not found", "Requested device",
-    "mediaDevices", "Camera",
+    "getUserMedia",
+    "Not supported",
+    "NotSupportedError",
+    "NotAllowedError",
+    "NotFoundError",
+    "NotReadableError",
+    "device not found",
+    "Requested device",
+    "mediaDevices",
+    "Camera",
 )
 
 # Windows 控制台默认 GBK 无法打印 • 等字符，统一用 UTF-8 输出
@@ -57,7 +64,9 @@ def main() -> int:
             if m.type != "error":
                 return
             if state["media_step"]:
-                media_notes.append(m.text)  # 摄像头步骤期间的错误仅记录（headless 无摄像头）
+                media_notes.append(
+                    m.text
+                )  # 摄像头步骤期间的错误仅记录（headless 无摄像头）
                 return
             fatal.append(f"console.error: {m.text}")
 
@@ -70,11 +79,18 @@ def main() -> int:
 
         page.on("console", on_console)
         page.on("pageerror", on_pageerror)
-        page.on("response", lambda r: (
-            warns.append(f"外部资源 HTTP {r.status}: {r.url}")
-            if r.status >= 400 and not r.url.startswith(BASE)
-            else (fatal.append(f"同源 HTTP {r.status}: {r.url}") if r.status >= 400 else None)
-        ))
+        page.on(
+            "response",
+            lambda r: (
+                warns.append(f"外部资源 HTTP {r.status}: {r.url}")
+                if r.status >= 400 and not r.url.startswith(BASE)
+                else (
+                    fatal.append(f"同源 HTTP {r.status}: {r.url}")
+                    if r.status >= 400
+                    else None
+                )
+            ),
+        )
 
         def text(sel: str) -> str:
             return (page.text_content(sel) or "").strip()
@@ -142,7 +158,9 @@ def main() -> int:
             else:
                 print("[ok] 加载页文案: SUMMONING ARCANA")
         else:
-            print("[skip] loader 初始态未捕获（本地加载过快），以 dist/index.html 静态文案检查兜底")
+            print(
+                "[skip] loader 初始态未捕获（本地加载过快），以 dist/index.html 静态文案检查兜底"
+            )
         page.wait_for_selector("#loader", state="detached", timeout=120_000)
         print("[ok] loader 消失（22 张纹理加载完成）")
 
@@ -213,17 +231,22 @@ def main() -> int:
 
         # --- 6. localStorage 记录 ---
         try:
-            recs = page.evaluate("JSON.parse(localStorage.getItem('ethereal-tarot:records') || '[]')")
+            recs = page.evaluate(
+                "JSON.parse(localStorage.getItem('ethereal-tarot:records') || '[]')"
+            )
             ok = (
                 len(recs) == 1
                 and len(recs[0]["cards"]) == 3
                 and recs[0]["mode"] == "MOUSE"
                 and recs[0]["language"] == "en"
                 and recs[0]["schemaVersion"] == 1
-                and bool(recs[0]["id"]) and bool(recs[0]["time"])
+                and bool(recs[0]["id"])
+                and bool(recs[0]["time"])
             )
             if ok:
-                print("[ok] localStorage 记录: 1 条 / 3 张 / MOUSE / en / schemaVersion=1")
+                print(
+                    "[ok] localStorage 记录: 1 条 / 3 张 / MOUSE / en / schemaVersion=1"
+                )
             else:
                 fatal.append(f"localStorage 记录异常: {recs}")
         except Exception as e:  # noqa: BLE001 — E2E 要把任何异常记成 fatal 项，不能中断整轮
@@ -261,7 +284,8 @@ def main() -> int:
         ok_cn = (
             wait_text("#logo-text", "虚幻卡罗牌", 3) == "虚幻卡罗牌"
             and wait_text("#lang-btn", "语言：中", 3) == "语言：中"
-            and wait_text("#guide-text", "拖拽以滚动 • 点击以选择", 3) == "拖拽以滚动 • 点击以选择"
+            and wait_text("#guide-text", "拖拽以滚动 • 点击以选择", 3)
+            == "拖拽以滚动 • 点击以选择"
         )
         if not ok_cn:
             fatal.append("语言切换 EN→CN 文案未更新")
@@ -281,7 +305,9 @@ def main() -> int:
         page.wait_for_selector("#loader", state="detached", timeout=120_000)
         page.wait_for_timeout(500)
         if text("#logo-text") != "ETHEREAL TAROT":
-            fatal.append(f"刷新后语言未恢复 EN（原版不持久化）: got={text('#logo-text')!r}")
+            fatal.append(
+                f"刷新后语言未恢复 EN（原版不持久化）: got={text('#logo-text')!r}"
+            )
         else:
             print("[ok] 刷新后恢复 EN（语言状态不持久化）")
 
@@ -290,7 +316,8 @@ def main() -> int:
         page.click("#mode-toggle")
         ok_hand = (
             wait_text("#mode-toggle", "Switch to Mouse", 3) == "Switch to Mouse"
-            and wait_text("#guide-text", "Palm: Scroll • Fist: Select", 3) == "Palm: Scroll • Fist: Select"
+            and wait_text("#guide-text", "Palm: Scroll • Fist: Select", 3)
+            == "Palm: Scroll • Fist: Select"
         )
         if not ok_hand:
             fatal.append("摄像头模式文案未切换")
@@ -301,7 +328,8 @@ def main() -> int:
         state["media_step"] = False
         ok_back = (
             wait_text("#mode-toggle", "Camera Off", 3) == "Camera Off"
-            and wait_text("#guide-text", "DRAG TO SCROLL • CLICK TO SELECT", 3) == "DRAG TO SCROLL • CLICK TO SELECT"
+            and wait_text("#guide-text", "DRAG TO SCROLL • CLICK TO SELECT", 3)
+            == "DRAG TO SCROLL • CLICK TO SELECT"
         )
         if not ok_back:
             fatal.append("切回鼠标模式文案未恢复")

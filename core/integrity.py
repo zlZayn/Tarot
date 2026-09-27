@@ -9,6 +9,7 @@
 
 判定：need_rebuild + reasons 列表；全部通过才免重建。
 """
+
 from __future__ import annotations
 
 import hashlib
@@ -34,7 +35,9 @@ def _hash_file(path: Path) -> str:
     return h.hexdigest()
 
 
-def _tree_hash(base: Path, exts: set[str] | None = None, relative_dir: Path | None = None) -> str:
+def _tree_hash(
+    base: Path, exts: set[str] | None = None, relative_dir: Path | None = None
+) -> str:
     """递归对 base 下所有文件（可选后缀过滤）算统一哈希；无文件返回 'empty'。"""
     files: list[Path] = []
     root = relative_dir or base
@@ -96,7 +99,9 @@ def write_meta(details: dict) -> None:
         "config_hash": details.get("config_hash", ""),
         "timestamp": details.get("timestamp", ""),
     }
-    C.BUILD_META.write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")
+    C.BUILD_META.write_text(
+        json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8"
+    )
 
 
 def check(force: bool = False) -> BuildStatus:
@@ -111,10 +116,14 @@ def check(force: bool = False) -> BuildStatus:
         "config_hash": config_hash(),
     }
     if meta is None:
-        return BuildStatus(need_rebuild=True, reasons=["缺少构建元数据（首次构建）"], details=cur)
+        return BuildStatus(
+            need_rebuild=True, reasons=["缺少构建元数据（首次构建）"], details=cur
+        )
 
     if not (C.DIST / "index.html").is_file():
-        return BuildStatus(need_rebuild=True, reasons=["dist/index.html 不存在"], details=cur)
+        return BuildStatus(
+            need_rebuild=True, reasons=["dist/index.html 不存在"], details=cur
+        )
 
     reasons = []
     for key, label in (
