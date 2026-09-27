@@ -6,5 +6,5 @@ import type { Language } from "../types/tarot";
 
 export const UI_TEXT = {
   en: uiTextEn,
-  cn: uiTextZh
+  cn: uiTextZh,
 } satisfies Record<Language, UiText>;

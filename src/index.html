@@ -1,62 +1,81 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ethereal Tarot | 虚幻塔罗牌</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-        href="https://fonts.googleapis.com/css2?family=Pirata+One&family=Cinzel:wght@400;700&family=Ma+Shan+Zheng&family=Long+Cang&family=Noto+Serif+SC:wght@600&family=Cormorant+Garamond:ital,wght@0,600;1,600&display=swap"
-        rel="stylesheet">
-</head>
+      href="https://fonts.googleapis.com/css2?family=Pirata+One&family=Cinzel:wght@400;700&family=Ma+Shan+Zheng&family=Long+Cang&family=Noto+Serif+SC:wght@600&family=Cormorant+Garamond:ital,wght@0,600;1,600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
 
-<body>
-
+  <body>
     <div id="loader">
-        <div
-            style="width: 40px; height: 40px; border: 2px solid #333; border-top: 2px solid #d4af37; border-radius: 50%; animation: spin 1s linear infinite;">
-        </div>
-        <div class="load-text" id="load-text">SUMMONING ARCANA</div>
+      <div
+        style="
+          width: 40px;
+          height: 40px;
+          border: 2px solid #333;
+          border-top: 2px solid #d4af37;
+          border-radius: 50%;
+          animation: spin 1s linear infinite;
+        "
+      ></div>
+      <div class="load-text" id="load-text">SUMMONING ARCANA</div>
     </div>
 
     <div id="canvas-container"></div>
     <div id="cursor"></div>
 
     <div id="ui-layer">
-        <div class="top-bar">
-            <div>
-                <div class="logo" id="logo-text">ETHEREAL TAROT</div>
-                <div class="controls">
-                    <div id="mode-toggle" class="btn">Camera Off</div>
-                    <div id="shuffle-btn" class="btn">Shuffle Deck</div>
-                    <div id="lang-btn" class="btn">Language: EN</div>
-                </div>
-            </div>
-            <div class="history" id="history-box"></div>
+      <div class="top-bar">
+        <div>
+          <div class="logo" id="logo-text">ETHEREAL TAROT</div>
+          <div class="controls">
+            <div id="mode-toggle" class="btn">Camera Off</div>
+            <div id="shuffle-btn" class="btn">Shuffle Deck</div>
+            <div id="lang-btn" class="btn">Language: EN</div>
+          </div>
         </div>
+        <div class="history" id="history-box"></div>
+      </div>
 
-        <div id="result-area">
-            <h2 class="card-name" id="r-name">NAME</h2>
-            <div class="card-desc" id="r-desc">DESC</div>
-            <div style="margin-top:20px; font-size: 0.7rem; color: #666; letter-spacing: 2px;" id="click-tip">CLICK TO
-                DISMISS</div>
+      <div id="result-area">
+        <h2 class="card-name" id="r-name">NAME</h2>
+        <div class="card-desc" id="r-desc">DESC</div>
+        <div
+          style="margin-top: 20px; font-size: 0.7rem; color: #666; letter-spacing: 2px"
+          id="click-tip"
+        >
+          CLICK TO DISMISS
         </div>
+      </div>
 
-        <div class="guide" id="guide-text">DRAG TO SCROLL • CLICK TO SELECT</div>
+      <div class="guide" id="guide-text">DRAG TO SCROLL • CLICK TO SELECT</div>
     </div>
 
     <video id="input-video"></video>
 
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"
+      crossorigin="anonymous"
+    ></script>
 
     <script type="module" src="./main.ts"></script>
-</body>
-
+  </body>
 </html>

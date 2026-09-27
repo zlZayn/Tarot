@@ -25,13 +25,13 @@ function makeId(): string {
 }
 
 export function saveDrawSession(
-  record: Omit<DrawSessionRecord, "id" | "time" | "schemaVersion">
+  record: Omit<DrawSessionRecord, "id" | "time" | "schemaVersion">,
 ): DrawSessionRecord {
   const full: DrawSessionRecord = {
     ...record,
     id: makeId(),
     schemaVersion: 1,
-    time: new Date().toISOString()
+    time: new Date().toISOString(),
   };
 
   const raw = localStorage.getItem(STORAGE_KEY);

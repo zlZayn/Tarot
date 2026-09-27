@@ -23,5 +23,5 @@ export const uiTextZh = {
   loading: "召唤阿尔卡纳中",
   historyTitle: "占卜环节",
   posNames: ["过去", "现在", "未来"],
-  defaultArcana: "阿尔卡纳"
+  defaultArcana: "阿尔卡纳",
 } satisfies UiText;

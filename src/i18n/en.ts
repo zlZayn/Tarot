@@ -21,7 +21,7 @@ export const uiTextEn = {
   loading: "SUMMONING ARCANA",
   historyTitle: "READING SESSION",
   posNames: ["PAST", "PRESENT", "FUTURE"],
-  defaultArcana: "ARCANA"
+  defaultArcana: "ARCANA",
 };
 
 /** 文案形状的唯一真源：本文件原样搬运自原 index.html 的 UI_TEXT.en，zh 侧用 satisfies 对齐它。 */

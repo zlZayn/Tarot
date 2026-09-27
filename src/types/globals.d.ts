@@ -20,7 +20,10 @@ declare class Hands {
 }
 
 declare class Camera {
-  constructor(video: HTMLVideoElement, opts: { onFrame: () => Promise<void>; width: number; height: number });
+  constructor(
+    video: HTMLVideoElement,
+    opts: { onFrame: () => Promise<void>; width: number; height: number },
+  );
   start(): Promise<void>;
 }
 
