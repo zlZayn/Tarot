@@ -5,5 +5,3 @@ uv.lock
 *.md
 *.bat
 *.cmd
-# legacy 区禁止重构（见 docs/ARCHITECTURE.md 防错清单）：全量重排等于重写它。
-src/legacy/

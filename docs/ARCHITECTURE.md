@@ -31,7 +31,7 @@
 - 第 3 张收起时写入一条抽牌记录（新功能，不影响任何原流程）
 
 ## 防错清单（改代码前必读）
-- legacy 区禁止重构、禁止"顺手修 bug"；只允许新增无副作用调用点
+- legacy 区禁止重构、禁止"顺手修 bug"；只允许新增无副作用调用点。**格式化不在禁止之列** —— Prettier 全量重排只动排版、不改行为，允许。
 - `IMG_URL` / `BACK_URL` 只在 `assets.ts` 改；改后必须 `npm run build` 重建 dist
 - 文案只在 `data/cards.ts`（牌数据）与 `i18n/`（UI 文案）改，与 legacy 内引用一一对应
 - dist 只由 `npm run build` 生成，手工改动一律会被覆盖（build 含 clean-dist 后置清理）
