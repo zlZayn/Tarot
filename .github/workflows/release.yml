@@ -18,7 +18,8 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          # 版本基线以 .node-version 为唯一来源，避免 CI 与本机漂移。
+          node-version-file: .node-version
           cache: npm
 
       - name: Install frontend deps

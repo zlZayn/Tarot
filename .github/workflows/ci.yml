@@ -1,0 +1,34 @@
+name: CI
+
+# 推 main 与每个 PR：类型检查 + 构建。
+# 发布链在 release.yml（打 v* tag 才跑），两者职责分开。
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          # 版本基线以 .node-version 为唯一来源，避免 CI 与本机漂移。
+          node-version-file: .node-version
+          cache: npm
+
+      - name: Install frontend deps
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Build dist
+        run: npm run build
