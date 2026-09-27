@@ -1,6 +1,6 @@
 # 决策：three 依赖 npm 本地化（2026-09-01）
 
-已实施：是
+状态：生效
 
 ## 问题
 - 原 index.html 用 import map 从 unpkg CDN 加载 three@0.160.0。
