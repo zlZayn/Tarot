@@ -14,6 +14,7 @@
 用法: python tests/run_e2e.py [base_url]   # 默认 http://localhost:8000
 退出码: 0 = 全部通过; 1 = 有失败
 """
+import contextlib
 import sys
 import time
 from pathlib import Path
@@ -37,10 +38,9 @@ MEDIA_ERR_MARKERS = (
 
 # Windows 控制台默认 GBK 无法打印 • 等字符，统一用 UTF-8 输出
 for stream in (sys.stdout, sys.stderr):
-    try:
-        stream.reconfigure(encoding="utf-8", errors="replace")
-    except Exception:
-        pass
+    if hasattr(stream, "reconfigure"):
+        with contextlib.suppress(OSError, ValueError):
+            stream.reconfigure(encoding="utf-8", errors="replace")
 
 
 def main() -> int:
@@ -226,7 +226,7 @@ def main() -> int:
                 print("[ok] localStorage 记录: 1 条 / 3 张 / MOUSE / en / schemaVersion=1")
             else:
                 fatal.append(f"localStorage 记录异常: {recs}")
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 — E2E 要把任何异常记成 fatal 项，不能中断整轮
             fatal.append(f"localStorage 检查失败: {e}")
 
         # --- 7. 收回展开 → 历史组（3 张缩略图） ---

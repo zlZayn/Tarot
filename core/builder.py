@@ -11,6 +11,7 @@ def run_build(log_lines: list[str] | None = None) -> tuple[bool, str]:
     try:
         proc = subprocess.run(
             cmd,
+            check=False,
             capture_output=True,
             text=True,
             encoding="utf-8",

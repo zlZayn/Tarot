@@ -14,6 +14,7 @@
 from __future__ import annotations
 
 import argparse
+import contextlib
 import sys
 import threading
 import time
@@ -23,7 +24,8 @@ from rich.console import Console
 from rich.live import Live
 from rich.panel import Panel
 
-from core import builder, config as C, integrity, server
+from core import builder, integrity, server
+from core import config as C
 from ui.dashboard import banner, checks_panel, running_panel
 from ui.prompts import choose
 from ui.spinners import Spinner
@@ -31,10 +33,9 @@ from ui.theme import THEME
 
 # Windows 控制台 GBK 无法打印 • 等 Unicode，统一 UTF-8 输出
 for stream in (sys.stdout, sys.stderr):
-    try:
-        stream.reconfigure(encoding="utf-8", errors="replace")
-    except Exception:
-        pass
+    if hasattr(stream, "reconfigure"):
+        with contextlib.suppress(OSError, ValueError):
+            stream.reconfigure(encoding="utf-8", errors="replace")
 
 
 def do_build(console: Console) -> tuple[bool, str]:
@@ -46,7 +47,7 @@ def do_build(console: Console) -> tuple[bool, str]:
                 "src_hash": integrity.src_hash(),
                 "res_hash": integrity.res_hash(),
                 "config_hash": integrity.config_hash(),
-                "timestamp": datetime.now().isoformat(timespec="seconds"),
+                "timestamp": datetime.now().astimezone().isoformat(timespec="seconds"),
             }
         )
     return ok, tail
@@ -76,7 +77,7 @@ def run_server(console: Console, start_port: int, no_open: bool) -> int:
 
                 try:
                     return msvcrt.getwch().upper()
-                except Exception:
+                except (OSError, ValueError):
                     return None
             import termios
             import tty
@@ -86,13 +87,13 @@ def run_server(console: Console, start_port: int, no_open: bool) -> int:
             try:
                 tty.setcbreak(fd)
                 return sys.stdin.read(1).upper()
-            except Exception:
+            except (OSError, ValueError):
                 return None
             finally:
                 termios.tcsetattr(fd, termios.TCSADRAIN, old)
         try:
             ch = sys.stdin.read(1)
-        except Exception:
+        except (OSError, ValueError):
             return None
         return ch.upper() if ch else None
 

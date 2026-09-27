@@ -24,3 +24,6 @@ tests/artifacts/
 
 # 启动器构建元数据（构建产物性质）
 .ethereal-meta.json
+
+# Lint / 格式化缓存
+.ruff_cache/

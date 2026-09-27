@@ -9,6 +9,7 @@ dependencies = []
 dev = [
     "playwright>=1.60.0",
     "rich>=13.0.0",
+    "ruff>=0.16.9",
 ]
 
 [tool.uv]
@@ -19,3 +20,7 @@ package = false
 [[tool.uv.index]]
 url = "https://pypi.org/simple"
 default = true
+
+[tool.ruff]
+# 不碰 Markdown 里嵌的 Python 片段：文档与笔记正文不属格式化范围
+extend-exclude = ["*.md"]

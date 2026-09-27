@@ -1,6 +1,8 @@
 """加载态封装（Status 上下文管理器，统一文案）。"""
 from __future__ import annotations
 
+from typing import Self
+
 from rich.console import Console
 from rich.status import Status
 
@@ -13,7 +15,7 @@ class Spinner:
         self._console = console
         self._message = message
 
-    def __enter__(self) -> "Spinner":
+    def __enter__(self) -> Self:
         self._status = self._console.status(self._message)
         self._status.start()
         return self

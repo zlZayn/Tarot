@@ -11,15 +11,15 @@
 
 退出码: 0 = 全部通过; 1 = 有失败
 """
+import contextlib
 import sys
 from pathlib import Path
 
 # Windows 控制台默认 GBK 无法打印 • 等字符，统一用 UTF-8 输出（与 launcher.py / run_e2e.py 同法）
 for stream in (sys.stdout, sys.stderr):
-    try:
-        stream.reconfigure(encoding="utf-8", errors="replace")
-    except Exception:
-        pass
+    if hasattr(stream, "reconfigure"):
+        with contextlib.suppress(OSError, ValueError):
+            stream.reconfigure(encoding="utf-8", errors="replace")
 
 ROOT = Path(__file__).resolve().parent.parent
 PUBLIC = ROOT / "public"
@@ -68,7 +68,7 @@ def check_http(base: str) -> None:
                     failures.append(f"HTTP {r.status}: {url}")
                 else:
                     print(f"OK  {url}")
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 — 校验脚本要把任何异常记成失败，不能中断整轮
             failures.append(f"FAIL {url}: {e}")
 
 

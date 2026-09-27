@@ -71,7 +71,7 @@ def serve(dist: Path, start_port: int, open_browser: bool, check: bool = True) -
     httpd = ThreadingHTTPServer(("127.0.0.1", port), handler)
     url = f"http://localhost:{port}"
     print(f"Ethereal Tarot 运行中: {url}  (目录: {dist})")
-    print(f"按 Ctrl+C 退出")
+    print("按 Ctrl+C 退出")
     if open_browser:
         threading.Timer(0.6, lambda: webbrowser.open(url)).start()
     try:
