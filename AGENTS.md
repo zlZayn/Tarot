@@ -15,6 +15,7 @@
 - **类型严格面（现值，改配置要同批改这里）**：`tsconfig.json` 为 `strict: false` + `allowJs: true` + `checkJs: false`，`noUncheckedIndexedAccess` 与 `exactOptionalPropertyTypes` **均未开**；`npm run typecheck` 的判据因此只是「TS 在宽松档下不报错」。兄弟仓（AIA / ATC / imagora）三开关全开，本仓要不要对齐**未决** —— 成本集中在 `src/legacy/app.ts`（受保护的搬运区，占 `src` 八成行）
 - 文案唯一权威：`src/data/cards.ts` + `src/i18n/`，不留在 legacy
 - three 固定 0.160.0，不升级不换加载方式（理由见决策记录）
+- 双件分离：AGENTS.md 只写规则，README.md 只写是什么/怎么改
 
 ## 常用命令
 - 前端：`npm run dev` · `npm run build` · `npm run typecheck`
