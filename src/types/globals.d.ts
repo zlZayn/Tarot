@@ -28,7 +28,14 @@ declare class Camera {
 }
 
 // 原逻辑遗留约定：DOM 元素上直接挂 userData（three 风格自定义数据）
+// 两种形状：网格挂牌面元数据，分组挂克隆体与快照。
 interface Element {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- 异构动态包（网格挂 {id,isRev,seed}、分组挂 {clones,snapshots}）；收窄它等于要求改 src/legacy/app.ts 的 27 处调用点，而那是只搬不重写的受保护区。
-  userData?: any;
+  userData?: {
+    id?: number;
+    originalIndex?: number;
+    isRev?: boolean;
+    seed?: number;
+    clones?: import("three").Mesh[];
+    snapshots?: { isRev: boolean; n: string; id: number }[];
+  };
 }
