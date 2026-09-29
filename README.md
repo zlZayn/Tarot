@@ -1,5 +1,7 @@
 # Ethereal Tarot 🔮
 
+[![CI](https://github.com/zlZayn/Tarot/actions/workflows/ci.yml/badge.svg)](https://github.com/zlZayn/Tarot/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 <div style="width: 260px; margin: 15px 0; border-radius: 8px; overflow: hidden; box-shadow: 0 3px 8px rgba(139, 69, 19, 0.15);">
   <a href="https://github.com/zlZayn/Tarot" target="_blank">
     <img src="docs/assets/preview.jpg" alt="虚幻塔罗牌" style="width: 100%; height: auto; display: block; cursor: pointer;">
@@ -114,3 +116,15 @@ Ethereal Tarot/
 * 维护索引（规则 / 命令 / 待办）→ [AGENTS.md](AGENTS.md)
 * 架构设计 → [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
 * 决策记录 → [.agents/notes/](.agents/notes/)
+
+---
+
+## 许可
+
+- 本仓基于 [MIT 许可](LICENSE) 发布。
+
+## 贡献
+
+- 本仓为个人项目；问题与建议请走 [Issues](https://github.com/zlZayn/Tarot/issues)。
+
+维护者文档地图 → 见 [AGENTS.md](AGENTS.md)。
