@@ -30,5 +30,35 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
+      # 以下两步是本次新增：package.json 早就有 lint / format:check 脚本，
+      # 但 workflow 里从没调用过（此前只跑 typecheck + build）。
+      - name: Lint
+        run: npm run lint
+
+      - name: Format check
+        run: npm run format:check
+
       - name: Build dist
         run: npm run build
+
+  # 本仓是 TS + Python 双栈：前端在 verify 里，Python 侧的 ruff 单独成 job。
+  # 为什么不跑 pytest：本仓 python dev 组没有 pytest，tests/ 里是 run_checks.py /
+  # run_e2e.py（需起服务 + playwright），那条链已经在 release.yml 的 tag 流程里跑。
+  python:
+    name: Ruff (Python)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Install dependencies (frozen)
+        run: uv sync --frozen --group dev
+
+      - name: Ruff check
+        run: uv run ruff check .
+
+      - name: Ruff format check
+        run: uv run ruff format --check .

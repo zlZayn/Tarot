@@ -18,6 +18,8 @@
 - 双件分离：AGENTS.md 只写规则，README.md 只写是什么/怎么改
 
 ## 常用命令
+
+- 本地钩子：`pre-commit install`（每个 clone 一次；本体 `uv tool install pre-commit`）——提交前自动修 TS（prettier/eslint，`npx --no-install`）与 Python（`ruff check --fix` / `ruff format`）；CI 只读跑两侧同一组检查
 - 前端：`npm run dev` · `npm run build` · `npm run typecheck`
 - Python 测试环境：`uv sync`（变更 py 依赖后 `uv lock && uv sync`）
 - Python lint / format：`uv run ruff check .` · `uv run ruff format .`（`--check` 只看不改；规则集与列宽走 ruff 默认，`.md` 已排除 —— 笔记与文档正文不属格式化范围）
