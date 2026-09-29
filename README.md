@@ -114,23 +114,3 @@ Ethereal Tarot/
 * 维护索引（规则 / 命令 / 待办）→ [AGENTS.md](AGENTS.md)
 * 架构设计 → [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
 * 决策记录 → [.agents/notes/](.agents/notes/)
-
----
-
-## 本地提交钩子（pre-commit）
-
-本仓是 TS + Python 双栈，钩子在提交前自动修复两侧的格式与 lint（只跑秒级检查；typecheck、构建与
-`tests/run_checks.py` + `run_e2e.py` 留在 CI 与发布链）。前端一律走 `npx --no-install`，不联网下载。
-
-前提：需要 uv 与 pre-commit（pre-commit 用 `uv tool install pre-commit` 装到 `~/.local/bin`）。
-
-```bash
-uv tool install pre-commit
-pre-commit install
-```
-
-> 装完需重开终端（或重载 shell 配置），PATH 才生效。
-
-- 手动全量跑：`pre-commit run --all-files`
-- 跳过单次：`git commit --no-verify`
-- 定义：[.pre-commit-config.yaml](.pre-commit-config.yaml)
