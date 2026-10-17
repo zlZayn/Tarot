@@ -7,7 +7,7 @@
 - 构建：Vite 5，`root=src`、`base="./"`、`publicDir=../public`、`outDir=../dist`；构建后 `scripts/clean-dist.mjs` 剔除 public 维护双件
 - 依赖：three 固定 `0.160.0`（npm 本地化，与原 CDN import map 同版本、同模块文件）
 - 手部识别：MediaPipe CDN 经典脚本保留（全局 `Hands` / `Camera`），`three/addons` 经 npm 解析
-- 资源：全部在 `public/textures/`，路径唯一权威 `src/config/assets.ts`（`IMG_URL` / `BACK_URL`）
+- 资源：全部在 `public/textures/`（统一 WebP，转换脚本 `scripts/optimize_images.py`），路径唯一权威 `src/config/assets.ts`；对外只暴露 `BACK_URL` 与 `cardUrl(id)`，目录与扩展名在该文件内收口，调用方不硬编码后缀
 - 记录：`localStorage`（key `ethereal-tarot:records`，`schemaVersion: 1`），无后端
 - 启动（朋友/轻量）：`server/serve.py` 纯标准库（端口顺延、同进程服务零残留、dist 过期提示）
 - 启动（开发者 Rich）：`launcher.py` + `core/`（零 Rich 依赖：config/integrity/builder/server）+ `ui/`（theme/spinners/prompts/dashboard）；构建元数据 `.ethereal-meta.json` 放项目根（dist 会被 emptyOutDir 清空）
@@ -19,7 +19,7 @@
 - `src/main.ts`：入口，导入样式与 legacy
 - `src/legacy/app.ts`：原内联脚本整体搬运区（已类型化，无 `@ts-nocheck`），与原文差异见文件头注释
 - `src/config/` `src/data/` `src/i18n/` `src/services/` `src/types/` `src/styles/`：配置 / 数据 / 文案 / 服务 / 类型（含 `types/globals.d.ts` MediaPipe 全局声明）/ 样式
-- `public/textures/`：运行时图片（cards/ 0-21.jpg，backs/ bm*.jpg|png）
+- `public/textures/`：运行时图片（cards/ 0-21.webp，backs/ bm*.webp）
 - `server/serve.py`：本地启动器（朋友端零依赖）
 - `launcher.py` + `core/` + `ui/`：Rich 启动器（开发者；校验/构建/运行面板）
 - `tests/`：资源校验 + 交互 E2E
@@ -32,7 +32,7 @@
 
 ## 防错清单（改代码前必读）
 - legacy 区禁止重构、禁止"顺手修 bug"；只允许新增无副作用调用点。**格式化不在禁止之列** —— Prettier 全量重排只动排版、不改行为，允许。
-- `IMG_URL` / `BACK_URL` 只在 `assets.ts` 改；改后必须 `npm run build` 重建 dist
+- 资源路径（`BACK_URL` / `cardUrl()`，即 `assets.ts` 内的目录与扩展名）只在 `assets.ts` 改；改后必须 `npm run build` 重建 dist
 - 文案只在 `data/cards.ts`（牌数据）与 `i18n/`（UI 文案）改，与 legacy 内引用一一对应
 - dist 只由 `npm run build` 生成，手工改动一律会被覆盖（build 含 clean-dist 后置清理）
 - public 双件不改名放（AGENTS.md 需精确文件名才能被注入）；dist 洁净由 tests/run_checks.py 防回归

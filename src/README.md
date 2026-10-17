@@ -4,7 +4,7 @@
 - `index.html`：HTML 结构 + MediaPipe CDN 脚本 + 入口；不承载样式与业务逻辑
 - `main.ts`：入口，导入 `styles/app.css` 与 `legacy/app`
 - `legacy/app.ts`：原逻辑整体搬运区（已类型化），与原文差异见文件头注释
-- `config/assets.ts`：`IMG_URL` / `BACK_URL`，资源路径唯一权威，被 legacy 依赖
+- `config/assets.ts`：资源路径唯一权威，只对外暴露 `BACK_URL` 与 `cardUrl(id)`；目录与扩展名在文件内收口，被 legacy 依赖
 - `data/cards.ts`：`TAROT_EN` / `TAROT_CN`（22 张牌数据），被 legacy 依赖；两张表都钉成 `as const satisfies readonly TarotCardData[]`，字段名或类型写错即编译期报错
 - `i18n/`：`UI_TEXT`（en/zh 聚合），被 legacy 依赖；**`en.ts` 是文案唯一真源**，`zh.ts` 由 `satisfies UiText`（类型派生自 `en.ts`）编译期对齐 —— 加键只加 en 就会在 zh 上报缺键
 - `services/records.ts`：`saveDrawSession` / `getDrawSessions`（localStorage），被 legacy 的 dismiss 调用

@@ -36,15 +36,15 @@
 
 ### 更换牌背图案
 
-默认牌背是 `bm4.png`，可自由替换：
+默认牌背是 `bm4.webp`，可自由替换：
 
-1. 把新图片（`.png` 或 `.jpg`）放入 `public/textures/backs/`。
+1. 把新图片（`.webp` / `.png` / `.jpg`）放入 `public/textures/backs/`；非 WebP 建议先跑 `uv run python scripts/optimize_images.py` 转成 `.webp`（本仓纹理已全量转 WebP，纹理由 45.6MB 降到 11.2MB）。
 2. 打开 `src/config/assets.ts`，修改 `BACK_URL`：
 
 ```javascript
-const BACK_URL = "./textures/backs/bm4.png";
+const BACK_URL = "./textures/backs/bm4.webp";
 // 改成你的文件，例如：
-const BACK_URL = "./textures/backs/my_back.jpg";
+const BACK_URL = "./textures/backs/my_back.webp";
 ```
 
 3. 运行 `npm run build` 重新构建，刷新网页生效。
@@ -60,6 +60,13 @@ npm install        # 安装依赖
 npm run dev        # 开发服务器 http://localhost:5173（改代码自动刷新）
 npm run build      # 构建发布版到 dist/
 npm run typecheck  # 类型检查
+```
+
+**素材维护**（可选，仅换图时用；需先 `uv sync`）
+
+```bash
+uv run python scripts/optimize_images.py --dry-run  # 只比体积，不落盘
+uv run python scripts/optimize_images.py            # PNG/JPG 批量转 WebP 并删原图
 ```
 
 **四个启动入口**
@@ -102,9 +109,9 @@ Ethereal Tarot/
 ├── core/ ui/              # 启动器核心逻辑层 / 渲染层（被 launcher.py 使用）
 ├── dist/                  # 网页程序本体 (npm run build 生成)
 │   ├── index.html         # 主程序入口
-│   └── textures/          # 素材文件夹
-│       ├── backs/         # 牌背图片 (bm.jpg, bm2.png, bm3.png, bm4.png)
-│       └── cards/         # 牌面图片 (0.jpg 愚者 ~ 21.jpg 世界，共 22 张)
+│   └── textures/          # 素材文件夹（全部 WebP）
+│       ├── backs/         # 牌背图片 (bm.webp, bm2.webp, bm3.webp, bm4.webp)
+│       └── cards/         # 牌面图片 (0.webp 愚者 ~ 21.webp 世界，共 22 张)
 └── src/                   # 源码文件夹
     ├── index.html         # 页面结构
     ├── config/assets.ts   # 图片路径配置（改图片路径改这里）
