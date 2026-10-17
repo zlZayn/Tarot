@@ -9,6 +9,9 @@
 //      未取消的 flip() 继续跑完会在 showUI 里 null.clone() 崩溃（原版遗留竞态，CI 慢环境真触发）。**这是行为修复，不是纯类型改动**
 //   7. 状态机取值显式化（2026-09-23，a84c1ba）：STATE.phase 从 string 收窄为 Phase 联合；'SCROLL' 只在守卫比较里出现、
 //      无赋值点，刻意保留以维持原判定语义。运行时零变化
+//   8. 纹理格式转 WebP（2026-10-18）：牌面/牌背后缀不再硬编码 ".jpg"，牌面改调 config/assets.ts 的
+//      `cardUrl(d.id)`、牌背直接用 `BACK_URL`（目录与后缀均在 assets.ts 内收口）。仍属「只搬不重写」
+//      ——仅换 URL 拼接点，行为不变
 import * as THREE from "three";
 import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
@@ -16,7 +19,7 @@ import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js"
 import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
 import { TAROT_EN, TAROT_CN } from "../data/cards";
 import { UI_TEXT } from "../i18n";
-import { IMG_URL, BACK_URL } from "../config/assets";
+import { cardUrl, BACK_URL } from "../config/assets";
 import { saveDrawSession } from "../services/records";
 import type { TarotCardData } from "../types/tarot";
 
@@ -320,7 +323,7 @@ function initDeck() {
     const isRev = Math.random() > 0.5;
     STATE.data[idx] = { id: d.id, isRev }; // Only store ID and State
     TEX_LOADER.load(
-      IMG_URL + d.id + ".jpg",
+      cardUrl(d.id),
       (t) => {
         createCard(t, idx, isRev);
         checkLoad();
@@ -693,7 +696,7 @@ function showUI(dataState: CardState): void {
   div.className = "h-item";
   div.style.alignItems = "center";
   div.style.gap = "10px";
-  const thumbUrl = `${IMG_URL}${d.id}.jpg`;
+  const thumbUrl = cardUrl(d.id);
   div.innerHTML = `
         <div style="display:flex; align-items:center; gap:10px;">
             <div class="h-thumb" style="background-image: url('${thumbUrl}'); ${isRev ? "transform: rotate(180deg);" : ""}"></div>
